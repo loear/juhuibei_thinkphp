@@ -5,3 +5,4 @@ composer.lock
 thinkphp
 /public/upload/
 runtime/
+/application/extra/
