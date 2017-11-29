@@ -1,0 +1,161 @@
+{extend name="Public:_index" /}
+{block name="title"}Banner 管理{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="heading"}Banner{/block}
+{block name="breadcrumb"}Banner{/block}
+{block name="wrapper"}
+    <div class="col-lg-12">
+        <div class="">
+            <button class="btn btn-default" onclick="banner_add('添加banner', '{:url('admin/Banner/add')}', '520', '360');">
+                <span class="icon16 entypo-icon-plus-2"></span>
+                添加banner
+            </button>
+            <button class="btn btn-default" onclick="banner_add('添加位置', '{:url('admin/Banner/position')}', '520', '290');">
+                <span class="icon16 entypo-icon-plus-2"></span>
+                添加位置
+            </button>
+            <div class="marginB10"></div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>
+                    <span class="icon16 icomoon-icon-numbered-list"></span>
+                    <span>Banner 列表</span>
+                </h4>
+                <a href="#" class="minimize" style="display: none;">Minimize</a>
+            </div>
+            <div class="panel-body noPad">
+                <div class="responsive" tabindex="5005" style="overflow: hidden; outline: none;">
+                    <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>图片</th>
+                            <th>位置</th>
+                            <th>位置描述</th>
+                            <th>类型</th>
+                            <th>keywords</th>
+                            <th>操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="banner" id="vo"}
+
+                          <tr>
+                            <td>{$vo.id}</td>
+                            <td >
+                              <div class="internal_page_item internal_page_item_gallery">
+                                  <div class="overlay_a img-thumbnail">
+                                      <img src="{$vo['img'] > 0?$vo['img']['url']:'/images/noimg_430x430.png'}" alt="{$vo.banner.name}" title="{$vo.banner.name}" style="width:120px;">
+                                      <div class="overlay">
+                                          <a class="overlay_img cboxElement" href="{$vo['img'] > 0?$vo['img']['url']:'/images/noimg_430x430.png'}" rel="lightbox" title="{$vo.banner.name}"></a>
+                                          <a class="overlay_project" href="javascript:void(0);" onclick="image_upload('上传图片', '{:url('admin/Image/upload', ['table'=>'banner','tid'=>$vo['id'], 'pid'=>1])}', '650', '526');"></a>
+                                      </div>
+                                  </div>
+                              </div>
+                            </td>
+                            <td>{$vo.banner.name}</td>
+                            <td>{$vo.banner.description}</td>
+
+                            <td>
+                                {if condition="$vo.type eq 1"}
+                                    导向文章
+                                {elseif condition="$vo.type eq 2"}
+                                    导向专题
+                                {else/}
+                                    无导向
+                                {/if}
+                            </td>
+                            <td>{$vo.keywords}</td>
+                            <td>
+                                <div class="controls center">
+                                    <a href="javascript:void(0);" class="tip" onclick="banner_edit('编辑','{:url('admin/Banner/edit', ['id'=>$vo['id']])}', '520', '360');"  oldtitle="Edit task" title="编辑" data-hasqtip="true">
+                                        <span class="icon12 icomoon-icon-pencil"></span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="tip" onclick="banner_del(this, {$vo['id']})" oldtitle="Remove task" title="删除" data-hasqtip="true">
+                                        <span class="icon12 icomoon-icon-remove"></span>
+                                    </a>
+                                </div>
+                            </td>
+                          </tr>
+
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div><!-- End .panel -->
+    </div>
+{/block}
+
+{block name="plugins_js"}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.custom.js"></script>
+
+<script>
+    /**
+     * 图片上传
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function image_upload(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 添加banner
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function banner_add(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 编辑banner
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function banner_edit(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 删除banner
+     * @param obj
+     * @param id
+     */
+    function banner_del(obj, id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                url: '/amos/banner/delete.html',
+                dataType: 'json',
+                success: function(data){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                },
+                error:function(data) {
+                    layer.msg('删除失败!',{icon:2,time:1000});
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+</script>
+
+{/block}

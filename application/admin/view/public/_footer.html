@@ -1,0 +1,49 @@
+<!-- Le javascript
+================================================== -->
+<!-- Important plugins put in all pages -->
+<script type="text/javascript" src="/static/js/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/static/js/libs/jRespond.min.js"></script>
+
+<!-- Charts plugins -->
+<script type="text/javascript" src="/static/plugins/charts/sparkline/jquery.sparkline.min.js"></script><!-- Sparkline plugin -->
+
+<!-- Misc plugins -->
+<script type="text/javascript" src="/static/plugins/misc/qtip/jquery.qtip.min.js"></script><!-- Custom tooltip plugin -->
+<script type="text/javascript" src="/static/plugins/misc/totop/jquery.ui.totop.min.js"></script>
+
+<!-- Search plugin -->
+<script type="text/javascript" src="/static/plugins/misc/search/tipuesearch_set.js"></script>
+<script type="text/javascript" src="/static/plugins/misc/search/tipuesearch_data.js"></script><!-- JSON for searched results -->
+<script type="text/javascript" src="/static/plugins/misc/search/tipuesearch.js"></script>
+
+<!-- Form plugins -->
+<script type="text/javascript" src="/static/plugins/forms/uniform/jquery.uniform.min.js"></script>
+
+<!-- Init plugins -->
+<script type="text/javascript" src="/static/js/main.js"></script><!-- Core js functions -->
+<script type="text/javascript" src="/static/js/empty.js"></script><!-- Init plugins only for page -->
+
+<script type="text/javascript">
+    function logout()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/amos/admin/logout.html",
+            data: {},
+            dataType: "json",
+            success: function(response){
+                if (response.status == 'success') {
+                    window.location = '/amos/admin/login.html'
+                }
+            },
+            error:function(data) {
+                layer.msg('请求失败!',{icon:2,time:1000});
+                console.log(data.msg);
+            },
+        });
+    }
+</script>

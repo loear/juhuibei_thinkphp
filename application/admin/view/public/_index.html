@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{block name="title"}title{/block}</title>
+    <meta name="description"
+          content="{block name='description'}description{/block}"/>
+    <meta name="keywords"
+          content="{block name='keywords'}keywords{/block}"/>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Force IE9 to render in normla mode -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    {// _meta 作为公共模版分离出去 }
+
+    {include file="public:_meta" /}
+</head>
+
+<body>
+<!--&lt;!&ndash; loading animation &ndash;&gt;-->
+<!--<div id="qLoverlay"></div>-->
+<!--<div id="qLbar"></div>-->
+
+{// _header 作为公共模版分离出去 }
+
+{include file="public:_header" /}
+
+<div id="wrapper">
+    {// _menu 作为公共模版分离出去 }
+
+    {include file="public:_menu" /}
+
+    <!--Body content-->
+    <div id="content" class="clearfix">
+        <div class="contentwrapper"><!--Content wrapper-->
+
+            <div class="heading">
+
+                <h3>{block name="heading"}Blank Page{/block}</h3>
+
+                {/* 搜索 -- 隐藏
+
+                <div class="resBtnSearch">
+                    <a href="#"><span class="icon16 icomoon-icon-search-3"></span></a>
+                </div>
+
+                <div class="search">
+
+                    <form id="searchform" action="search.html">
+                        <input type="text" id="tipue_search_input" class="top-search" placeholder="Search here ..."/>
+                        <input type="submit" id="tipue_search_button" class="search-btn" value=""/>
+                    </form>
+
+                </div><!-- End search -->
+
+                隐藏-- */}
+
+                <ul class="breadcrumb">
+                    <li>位置:</li>
+                    <li>
+                        <a href="#" class="tip" title="back to dashboard">
+                            <span class="icon16 icomoon-icon-screen-2"></span>
+                        </a>
+                        <span class="divider">
+                                <span class="icon16 icomoon-icon-arrow-right-3"></span>
+                            </span>
+                    </li>
+                    <li class="active">{block name="breadcrumb"}Blank Page{/block}</li>
+                </ul>
+
+            </div><!-- End .heading-->
+
+            <!-- Build page from here: -->
+            <div class="row">
+                {block name="wrapper"}Page Content{/block}
+            </div><!-- End .row -->
+            <!--End page -->
+
+        </div><!-- End contentwrapper -->
+    </div><!-- End #content -->
+
+</div><!-- End #wrapper -->
+
+{// _footer 作为公共模版分离出去 }
+
+{include file="public:_footer" /}
+
+{// plugins_js 第三方js }
+{block name="plugins_js"}{/block}
+
+</body>
+</html>

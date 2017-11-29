@@ -1,0 +1,255 @@
+{extend name="public:_single" /}
+{block name="title"}图片上传{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="wrapper"}
+<link href="/static/plugins/gallery/jpages/jPages.css" rel="stylesheet" type="text/css"/>
+
+<div class="btn-group">
+    <button type="button" data-toggle="tooltip" title="" id="button-parent" class="btn btn-default" data-original-title="上级">
+        <i class="icon-arrow-left"></i>
+    </button>
+    <input type="hidden" name="pid" value="{$pid}" id="image-pid">
+    <button type="button" data-toggle="tooltip" title="" id="button-upload" class="btn btn-default" data-original-title="上传">
+        <i class="icon-upload"></i>
+    </button>
+
+    <button type="button" data-toggle="tooltip" title="" id="button-refresh" class="btn btn-default" data-original-title="刷新">
+        <i class="icon-refresh"></i>
+    </button>
+    <button type="button" data-toggle="tooltip" title="" id="button-folder" class="btn btn-default" data-original-title="新文件夹">
+        <i class="icon-folder-open"></i>
+    </button>
+    <button type="button" data-toggle="tooltip" title="" id="button-delete" class="btn btn-warning" data-original-title="删除">
+        <i class="icon-trash write"></i>
+    </button>
+    <span style="margin-right: 20px;"></span>
+    {$page}
+</div>
+
+
+<ul id="itemContainer" class="galleryView" data-url="/amos/{$table}/change_image.html" data-id="{$tid}">
+    {volist name="data" id="vo"}
+    <li>
+        <div class="img-box" onclick="{$vo.type=='3'?'catalogue':'change_image'}('{:url('admin/Image/upload', ['table'=>$table,'tid'=>$tid, 'pid'=>$vo['id']])}', {$vo['id']})">
+            <img src="{$vo.type=='3'?'/images/catalogue.jpg':$vo.url}" class="img-thumbnail img-box-img" >
+        </div>
+        <div class="form-group">
+            <label class="radio-inline">
+                <div class="checkbox" id="uniform-inlineCheckbox_{$vo.id}">
+                <span class="checked">
+                    <input name="image[]" type="checkbox" id="inlineCheckbox_{$vo.id}" value="{$vo.id}" >
+
+                </span>
+
+                </div>
+            </label>
+            <span onclick="rename('{$vo.name}', {$vo.id})">{$vo.name}</span>
+        </div>
+    </li>
+    {/volist}
+</ul>
+
+{/block}
+
+{block name="plugins_js"}
+    <script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+    <script>
+        function catalogue(url, id) {
+            window.location.href = url;
+        }
+        function change_image(url, id) {
+            $.ajax({
+                url: $('#itemContainer').data('url'),
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "tid": $('#itemContainer').data('id'),
+                    "id": id
+                },
+                success: function(json) {
+                    if (json.status == 'failed') {
+                        layer.msg('选择失败!', {icon:2, time:1000});
+                    }
+                    if (json.status == 'success') {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.msg('选择成功',{icon:1,time:10000});
+                        setTimeout(function(){
+                            parent.location.reload(); // 刷新页面
+                            parent.layer.close(index);
+                        },1200);
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        }
+
+        function rename(file, id) {
+            var filename = file.split('.', 1)
+            layer.prompt({title: '重命名-不支持文件夹', value: filename,}, function(name, index){
+                $.ajax({
+                    url: '/amos/image/rename.html',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        "id": id,
+                        "name": name
+                    },
+                    success: function (json) {
+                        if (json.status == 'failed') {
+                            layer.msg('重命名失败!', {icon:2, time:1000});
+                        }
+                        if (json.status == 'success') {
+                            layer.msg('重命名成功!', {icon:1, time:1000});
+                            setTimeout(function(){
+                                $('#button-refresh').trigger('click');
+                            }, 1200);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+                layer.close(index);
+            });
+        }
+
+        $('#button-refresh').on('click', function(e) {
+            e.preventDefault();
+            window.location.reload();
+        });
+
+        $('#button-parent').on('click', function() {
+            window.history.go(-1);
+        });
+
+        $('#button-upload').on('click', function() {
+            $('#form-upload').remove();
+            $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" value="" /></form>');
+            $('#form-upload input[name=\'file\']').trigger('click');
+            if (typeof timer != 'undefined') {
+                clearInterval(timer);
+            }
+            timer = setInterval(function() {
+                if ($('#form-upload input[name=\'file\']').val() != '') {
+                    clearInterval(timer);
+                    var data = new FormData($('#form-upload')[0]);
+                    data.append('pid',$('#image-pid').val());
+                    $.ajax({
+                        url: '/amos/image/upload_process.html',
+                        type: 'post',
+                        dataType: 'json',
+                        data: data,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function() {
+                            $('#button-upload i').replaceWith('<i class="icon-ban-circle"></i>');
+                            $('#button-upload').prop('disabled', true);
+                        },
+                        complete: function() {
+                            $('#button-upload i').replaceWith('<i class="icon-upload"></i>');
+                            $('#button-upload').prop('disabled', false);
+                        },
+                        success: function(json) {
+                            if (json.status == 'failed') {
+                                layer.msg('上传失败!', {icon:2, time:1000});
+                            }
+                            if (json.status == 'success') {
+                                layer.msg('上传成功!', {icon:1, time:1000});
+                                setTimeout(function(){
+                                    $('#button-refresh').trigger('click');
+                                }, 1200);
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                        }
+                    });
+                }
+            }, 500);
+        });
+
+        $('#button-folder').popover({
+            html: true,
+            placement: 'bottom',
+            trigger: 'click',
+            title: '新建文件夹',
+            content: function() {
+                html  = '<div class="input-group">';
+                html += '  <input type="text" name="folder" value="" placeholder="新建文件夹" class="form-control">';
+                html += '  <span class="input-group-btn"><button type="button" title="新文件夹" id="button-create" class="btn btn-default"><i class="icon-plus" style="height:19px;line-height: 19px;"></i></button></span>';
+                html += '</div>';
+
+                return html;
+            }
+        });
+
+        $('#button-folder').on('shown.bs.popover', function() {
+            $('#button-create').on('click', function() {
+                $.ajax({
+                    url: '/amos/image/mkdir.html',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        "pid": $('#image-pid').val(),
+                        "folder": encodeURIComponent($('input[name=\'folder\']').val())
+                    },
+                    beforeSend: function() {
+                        $('#button-create').prop('disabled', true);
+                    },
+                    complete: function() {
+                        $('#button-create').prop('disabled', false);
+                    },
+                    success: function(json) {
+                        if (json.status == 'failed') {
+                            layer.msg('创建失败!', {icon:2, time:1000});
+                        }
+                        if (json.status == 'success') {
+                            layer.msg('创建成功!', {icon:1, time:1000});
+                            setTimeout(function(){
+                                $('#button-refresh').trigger('click');
+                            }, 1200);
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        $('#button-delete').on('click', function(e) {
+            if (confirm('确认？')) {
+                $.ajax({
+                    url: '/amos/image/delete.html',
+                    type: 'post',
+                    dataType: 'json',
+                    data: $('input[name^=\'image\']:checked'),
+                    beforeSend: function() {
+                        $('#button-delete').prop('disabled', true);
+                    },
+                    complete: function() {
+                        $('#button-delete').prop('disabled', false);
+                    },
+                    success: function(json) {
+                        if (json.status == 'failed') {
+                            layer.msg('删除失败!', {icon:2, time:1000});
+                        }
+                        if (json.status == 'success') {
+                            layer.msg('删除成功!', {icon:1, time:1000});
+                            setTimeout(function(){
+                                $('#button-refresh').trigger('click');
+                            }, 1200);
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+{/block}

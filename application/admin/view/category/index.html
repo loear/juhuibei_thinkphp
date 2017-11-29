@@ -1,0 +1,150 @@
+{extend name="public:_index" /}
+{block name="title"}Category 管理{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="heading"}Category{/block}
+{block name="breadcrumb"}Category{/block}
+{block name="wrapper"}
+<div class="col-lg-12">
+    <div class="">
+        <button class="btn btn-default" onclick="category_add('添加', '{:url('admin/Category/add')}', '520', '420');">
+            <span class="icon16 entypo-icon-plus-2"></span>
+            添加分类
+        </button>
+        <div class="marginB10"></div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                <span class="icon16 icomoon-icon-numbered-list"></span>
+                <span>Category 列表</span>
+            </h4>
+            <a href="#" class="minimize" style="display: none;">Minimize</a>
+        </div>
+        <div class="panel-body noPad">
+            <div class="responsive" tabindex="5005" style="overflow: hidden; outline: none;">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>名称</th>
+                        <th>描述</th>
+                        <th>图片</th>
+                        <th>类型</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="categories" id="vo"}
+
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.description}</td>
+                        <td>
+                            <div class="internal_page_item internal_page_item_gallery">
+                                <div class="overlay_a img-thumbnail">
+                                    <img src="{$vo.img.url?$vo.img.url:'/images/noimg_430x430.png'}" alt="{$vo.title}" title="{$vo.title}" style="width:60px;">
+                                    <div class="overlay">
+                                        <a class="overlay_img cboxElement" href="{$vo.img.url?$vo.img.url:'/images/noimg_430x430.png'}" rel="lightbox" title=""></a>
+                                        <a class="overlay_project" href="javascript:void(0);" onclick="image_upload('上传图片', '{:url('admin/Image/upload', ['table'=>'category','tid'=>$vo['id'], 'pid'=>2])}', '650', '526');"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{$vo.type==1?'导向菜单':'导向文章'}</td>
+                        <td>
+                            <div class="controls center">
+                                <a href="javascript:void(0);" class="tip" onclick="category_edit('编辑','{:url('admin/Category/edit', ['id'=>$vo['id']])}', '520', '420');"  oldtitle="Edit task" title="编辑" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-pencil"></span>
+                                </a>
+                                <a href="javascript:void(0);" class="tip" onclick="category_del(this, {$vo['id']})" oldtitle="Remove task" title="删除" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-remove"></span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- End .panel -->
+</div>
+{/block}
+
+{block name="plugins_js"}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.custom.js"></script>
+
+<script>
+    /**
+     * 图片上传
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function image_upload(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 添加分类
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function category_add(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 编辑分类
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function category_edit(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 删除分类
+     * @param obj
+     * @param id
+     */
+    function category_del(obj, id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                url: '/amos/category/delete.html',
+                dataType: 'json',
+                success: function(response){
+                    if (response.status == 'success') {
+                        $(obj).parents("tr").remove();
+                        layer.msg('删除成功!',{icon:1,time:1000});
+                    } else if ( response.status == 'failed') {
+                        layer.msg('删除失败', {icon:2,time:1000});
+                    }
+                },
+                error:function(data) {
+                    layer.msg('请求失败!',{icon:2,time:1000});
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+</script>
+
+{/block}

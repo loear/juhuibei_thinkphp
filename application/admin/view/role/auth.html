@@ -1,0 +1,120 @@
+{extend name="public:_single" /}
+{block name="title"}角色赋权{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="wrapper"}
+
+<!-- Plugin stylesheets -->
+<link href="/static/plugins/misc/qtip/jquery.qtip.css" rel="stylesheet" type="text/css" />
+<link href="/static/plugins/forms/inputlimiter/jquery.inputlimiter.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/togglebutton/toggle-buttons.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/uniform/uniform.default.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/color-picker/color-picker.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/select/select2.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/validate/validate.css" type="text/css" rel="stylesheet" />
+
+
+<form action="javascript:void(0);" class="form-horizontal" id="form-role-auth" data-action="{:url('admin/Role/authProcess')}" data-id="{$id}">
+
+    <div class="panel-group accordion" id="accordion1">
+        {volist name="nodes" id='v1'}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse{$v1.id}">
+                        {$v1.nodename}
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse{$v1.id}" class="panel-collapse in" style="height: auto;">
+                <div class="panel-body">
+                    {volist name="v1._data" id="v2"}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="form-name">{$v2.nodename}</label>
+                        <div class="col-sm-11" style="line-height: 30px;">
+                            {volist name="v2._data" id="v3"}
+                            <input type="checkbox" name="node[]" class="form-control uniform-input text" id="form-name" value="{$v3.id}"
+                                {:in_array($v3.id,$checked)?' checked':''}
+                            >
+                                {$v3.nodename}
+                            {/volist}
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+
+    <div class="form-group">
+        <div class="col-lg-offset-3 col-lg-9">
+            <button type="submit" class="btn btn-info">保存</button>
+        </div>
+    </div>
+
+</form>
+{/block}
+
+{block name="plugins_js"}
+
+<!-- Form plugins -->
+
+<script type="text/javascript" src="/static/plugins/forms/elastic/jquery.elastic.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/inputlimiter/jquery.inputlimiter.1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/maskedinput/jquery.maskedinput-1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/togglebutton/jquery.toggle.buttons.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/uniform/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/globalize/globalize.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/color-picker/colorpicker.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/timeentry/jquery.timeentry.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/select/select2.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/dualselect/jquery.dualListBox-1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/tiny_mce/tinymce.min.js"></script>
+<script type="text/javascript" src="/static/js/supr-theme/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/static/js/supr-theme/jquery-ui-sliderAccess.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/validate/jquery.validate.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/wizard/jquery.form.js"></script>
+
+<!-- Init plugins -->
+
+<script type="text/javascript" src="/static/js/forms.js"></script><!-- Init plugins only for page -->
+
+<script>
+    $("#form-role-auth").validate({
+        rules:{
+            name: {
+                required: true,
+                minlength: 2
+            }
+        },
+        onkeyup:false,
+        focusCleanup:true,
+        success:"valid",
+        submitHandler:function(form){
+            $(form).ajaxSubmit({
+                type:'post',
+                url: $("#form-role-auth").data('action'),
+                dataType: 'json',
+                data:{
+                    id:$("#form-role-auth").data('id')
+                },
+                success:function(response){
+                    if (response.status == 'success') {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.msg('赋权成功', {icon:1,time:10000});
+                        setTimeout(function(){
+                            parent.location.reload(); // 刷新页面
+                            parent.layer.close(index);
+                        },1200);
+                    } else if ( response.status == 'failed') {
+                        parent.layer.msg('赋权成功，code='+response.code,{icon:2,time:1000});
+                    }
+                },error:function(data) {
+                    parent.layer.msg('请求失败，请重试', {icon:2,time:1000});
+                }
+            });
+        }
+    });
+</script>
+{/block}

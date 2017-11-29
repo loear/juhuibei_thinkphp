@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{block name="title"}title{/block}</title>
+    <meta name="description"
+          content="{block name='description'}description{/block}"/>
+    <meta name="keywords"
+          content="{block name='keywords'}keywords{/block}"/>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Force IE9 to render in normla mode -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    {// _meta 作为公共模版分离出去 }
+
+    {include file="public:_meta" /}
+</head>
+
+<body>
+<div id="wrapper">
+    <!--Body content-->
+    <div id="content" class="clearfix" style="margin-left:0;padding-top:0;">
+        <p></p>
+        <!-- Build page from here: -->
+        <div class="row">
+            {block name="wrapper"}Page Content{/block}
+        </div><!-- End .row -->
+        <!--End page -->
+
+    </div><!-- End #content -->
+
+</div><!-- End #wrapper -->
+
+{// _footer 作为公共模版分离出去 }
+
+{include file="public:_footer" /}
+
+{// plugins_js 第三方js }
+{block name="plugins_js"}{/block}
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!--Responsive navigation button-->
+<div class="resBtn">
+    <a href="#"><span class="icon16 minia-icon-list-3"></span></a>
+</div>
+
+<!--Sidebar collapse button-->
+<div class="collapseBtn leftbar">
+    <a href="#" class="tipR" title="Hide sidebar"><span class="icon12 minia-icon-layout"></span></a>
+</div>
+
+<!--Sidebar background-->
+<div id="sidebarbg"></div>
+<!--Sidebar content-->
+
+<div id="sidebar">
+
+    <div class="shortcuts">
+        <ul>
+            <li><a href="#" title="Support section" class="tip"><span
+                    class="icon24 icomoon-icon-support"></span></a></li>
+            <li><a href="#" title="Database backup" class="tip"><span
+                    class="icon24 icomoon-icon-database"></span></a></li>
+            <li><a href="#" title="Sales statistics" class="tip"><span
+                    class="icon24 icomoon-icon-pie-2"></span></a></li>
+            <li><a href="#" title="Write post" class="tip"><span class="icon24 icomoon-icon-pencil"></span></a></li>
+        </ul>
+    </div><!-- End search -->
+
+    <div class="sidenav">
+
+        <div class="sidebar-widget" style="margin: -1px 0 0 0;">
+            <h5 class="title" style="margin-bottom:0">菜单</h5>
+        </div><!-- End .sidenav-widget -->
+
+        <div class="mainnav">
+            <ul>
+                <li>
+                    <a href="{:url('admin/Banner/index')}"
+                       class="{if condition="$path eq 'amos/banner/index'"}current{/if}">
+                        <span class="icon16  icomoon-icon-images"></span>
+                        banner列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Category/index')}"
+                       class="{if condition="$path eq 'amos/category/index'"}current{/if}">
+                    <span class="icon16 icomoon-icon-menu-2"></span>
+                    菜单列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Template/index')}"
+                       class="{if condition="$path eq 'amos/template/index'"}current{/if}">
+                    <span class="icon16 icomoon-icon-grid-4"></span>
+                    模板列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Article/index')}"
+                       class="{if condition="$path eq 'amos/article/index'"}current{/if}">
+                    <span class="icon16 icomoon-icon-profile"></span>
+                    文章列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Invitation/index')}"
+                       class="{if condition="$path eq 'amos/invitation/index'"}current{/if}">
+                    <span class="icon16 silk-icon-heart"></span>
+                    请柬列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/User/index')}"
+                       class="{if condition="$path eq 'amos/user/index'"}current{/if}">
+                    <span class="icon16 typ-icon-users"></span>
+                    用户列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Admin/index')}"
+                       class="{if condition="$path eq 'amos/admin/index'"}current{/if}">
+                    <span class="icon16 typ-icon-user"></span>
+                    管理员列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Role/index')}"
+                       class="{if condition="$path eq 'amos/role/index'"}current{/if}">
+                    <span class="icon16 icomoon-icon-knight"></span>
+                    角色列表
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('admin/Node/index')}"
+                       class="{if condition="$path eq 'amos/node/index'"}current{/if}">
+                    <span class="icon16 icomoon-icon-equalizer-2"></span>
+                    节点列表
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div><!-- End sidenav -->
+
+</div><!-- End #sidebar -->

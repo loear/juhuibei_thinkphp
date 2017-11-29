@@ -1,0 +1,114 @@
+{extend name="Public:_index" /}
+{block name="title"}Invitation 管理{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="heading"}Invitation{/block}
+{block name="breadcrumb"}Invitation{/block}
+{block name="wrapper"}
+<div class="col-lg-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                <span class="icon16 icomoon-icon-numbered-list"></span>
+                <span>Invitation 列表</span>
+            </h4>
+            <a href="#" class="minimize" style="display: none;">Minimize</a>
+        </div>
+        <div class="panel-body noPad">
+            <div class="responsive" tabindex="5005" style="overflow: hidden; outline: none;">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>标题</th>
+                        <th>新郎</th>
+                        <th>新郎手机</th>
+                        <th>新娘</th>
+                        <th>新娘手机</th>
+                        <th>婚礼日期</th>
+                        <th>婚礼酒店</th>
+                        <th>详细地址</th>
+
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="invitation" id="vo"}
+
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.groom_phone}</td>
+                        <td>{$vo.bride}</td>
+                        <td>{$vo.bride_phone}</td>
+                        <td>{$vo.wedding_date|date="Y-m-d H:i:s",###}</td>
+                        <td>{$vo.wedding_hotel}</td>
+                        <td>{$vo.address}</td>
+
+                        <td>
+                            <div class="controls center">
+                                <a href="javascript:;" class="tip" onclick="category_edit('编辑','{:url('Admin/Category/edit')}', '400', '600');"  oldtitle="Edit task" title="" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-pencil"></span>
+                                </a>
+                                <a href="javascript:;" class="tip" onclick="category_del(this, '1')" oldtitle="Remove task" title="" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-remove"></span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {/volist}
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-lg-6">
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="pagination_paginate">
+                            {$invitation->render()}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div><!-- End .panel -->
+</div>
+{/block}
+
+{block name="plugins_js"}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    function category_edit(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    function category_del(obj, id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                url: '',
+                dataType: 'json',
+                success: function(data){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                },
+                error:function(data) {
+                    layer.msg('删除失败!',{icon:2,time:1000});
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+</script>
+
+{/block}

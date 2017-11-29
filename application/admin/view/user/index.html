@@ -1,0 +1,44 @@
+{extend name="Public:_index" /}
+{block name="title"}User 管理{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="heading"}User{/block}
+{block name="breadcrumb"}User{/block}
+{block name="wrapper"}
+
+{/block}
+
+{block name="plugins_js"}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    function category_edit(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    function category_del(obj, id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                url: '',
+                dataType: 'json',
+                success: function(data){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                },
+                error:function(data) {
+                    layer.msg('删除失败!',{icon:2,time:1000});
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+</script>
+
+{/block}

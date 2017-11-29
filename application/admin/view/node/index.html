@@ -1,0 +1,149 @@
+{extend name="public:_index" /}
+{block name="title"}Node 管理{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="heading"}节点{/block}
+{block name="breadcrumb"}节点{/block}
+{block name="wrapper"}
+<div class="col-lg-12">
+    <div class="">
+        <button class="btn btn-default" onclick="node_add('添加节点', '{:url('admin/Node/add')}', '600', '500');">
+            <span class="icon16 entypo-icon-plus-2"></span>
+            添加节点
+        </button>
+        <div class="marginB10"></div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                <span class="icon16 icomoon-icon-numbered-list"></span>
+                <span>节点列表</span>
+            </h4>
+            <a href="#" class="minimize" style="display: none;">Minimize</a>
+        </div>
+        <div class="panel-body noPad">
+            <div class="responsive" tabindex="5005" style="overflow: hidden; outline: none;">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>控制器/方法</th>
+                        <th>控制器/方法名</th>
+                        <th>排序</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="nodes" id="vo"}
+                    <tr {$vo._level>2?'style="display:none;"':''} class="node_{$vo.id}" path="path_{$vo.pid.'_'.$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td style="text-align:left;" >
+                            {if condition="$vo._has_child"}
+                                <a href="javascript:void(0);" onclick="treeClicked(this, '{$vo.id}');" class="tip" title="展开">
+                                    <span class="icon16 icomoon-icon-file-plus" ></span>
+                                </a>
+                            {else/}
+                                <span class="icon16 icomoon-icon-file-5"></span>
+                            {/if}
+                            {$vo._name}
+                        </td>
+                        <script>
+                            var niddle = 1;
+                            // 点击展开 收缩节点
+                            function treeClicked(obj, node_id)
+                            {
+                                if (niddle == 1) {
+                                    $(obj).children('span').removeClass('icomoon-icon-file-plus').addClass('icomoon-icon-file-minus');
+                                    $("tr[path^='path_"+node_id+"_']").show();
+                                    niddle = 0;
+                                } else {
+                                    $(obj).children('span').removeClass('icomoon-icon-file-minus').addClass('icomoon-icon-file-plus');
+                                    $("tr[path^='path_"+node_id+"_']").hide();
+                                    niddle = 1;
+                                }
+                            }
+                        </script>
+                        <td>{$vo.nodename}</td>
+                        <td>{$vo.sort_number}</td>
+                        <td>{$vo.remark}</td>
+                        <td>
+                            <div class="controls center">
+                                <a href="javascript:void(0);" class="tip" onclick="node_edit('编辑节点', '{$vo.id|url='admin/Node/edit',['id'=>###]}', '600', '500');"  oldtitle="Edit task" title="编辑" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-pencil"></span>
+                                </a>
+                                <a href="javascript:void(0);" class="tip" onclick="node_del(this, '{$vo.id}')" oldtitle="Remove task" title="删除" data-hasqtip="true">
+                                    <span class="icon12 icomoon-icon-remove"></span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- End .panel -->
+</div>
+{/block}
+
+{block name="plugins_js"}
+
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    /**
+     * 添加节点
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function node_add(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 编辑节点
+     * @param title
+     * @param url
+     * @param w
+     * @param h
+     */
+    function node_edit(title, url, w, h){
+        layer_show(title, url, w, h);
+    }
+
+    /**
+     * 删除节点
+     * @param obj
+     * @param id
+     */
+    function node_del(obj, id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                url: '/amos/node/delete.html',
+                dataType: 'json',
+                success: function(response){
+                    if (response.status == 'success') {
+                        $(obj).parents("tr").remove();
+                        layer.msg('删除成功!',{icon:1,time:1000});
+                    } else if ( response.status == 'failed') {
+                        layer.msg('删除失败', {icon:2,time:1000});
+                    }
+                },
+                error:function(data) {
+                    layer.msg('请求失败!',{icon:2,time:1000});
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+</script>
+
+{/block}

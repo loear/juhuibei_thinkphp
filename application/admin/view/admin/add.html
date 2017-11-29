@@ -1,0 +1,145 @@
+{extend name="public:_single" /}
+{block name="title"}添加管理员{/block}
+{block name="description"}描述{/block}
+{block name="keywords"}关键词{/block}
+{block name="wrapper"}
+
+<!-- Plugin stylesheets -->
+<link href="/static/plugins/misc/qtip/jquery.qtip.css" rel="stylesheet" type="text/css" />
+<link href="/static/plugins/forms/inputlimiter/jquery.inputlimiter.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/togglebutton/toggle-buttons.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/uniform/uniform.default.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/color-picker/color-picker.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/select/select2.css" type="text/css" rel="stylesheet" />
+<link href="/static/plugins/forms/validate/validate.css" type="text/css" rel="stylesheet" />
+
+
+<form action="javascript:void(0);" class="form-horizontal" id="form-admin-add" data-action="{:url('admin/Admin/addProcess')}">
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-username">用户名</label>
+        <div class="col-lg-9">
+            <input type="text" name="username" class="form-control uniform-input text" id="form-username">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-password">密码</label>
+        <div class="col-lg-9">
+            <input type="password" name="password" class="form-control uniform-input text" id="form-password">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-role">选择角色</label>
+        <div class="col-lg-9">
+            <select name="roles[]" id="form-role" multiple="multiple" class="nostyle form-control">
+                <option value="0">未分配</option>
+                {volist name="roles" id="vo"}
+                <option value="{$vo.id}" >{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-nickname">昵称</label>
+        <div class="col-lg-9">
+            <input type="text" name="nickname" class="form-control uniform-input text" id="form-nickname">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-email">邮箱</label>
+        <div class="col-lg-9">
+            <input type="text" name="email" class="form-control uniform-input text" id="form-email">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-phone">手机</label>
+        <div class="col-lg-9">
+            <input type="text" name="phone" class="form-control uniform-input text" id="form-phone">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label" for="form-status">状态</label>
+        <div class="col-lg-9">
+            <select name="status" id="form-status">
+                <option value="0">禁用</option>
+                <option value="1">正常</option>
+                <option value="2" selected>未验证</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-lg-offset-3 col-lg-9">
+            <button type="submit" class="btn btn-info">保存</button>
+        </div>
+    </div>
+
+</form>
+{/block}
+
+{block name="plugins_js"}
+
+<!-- Form plugins -->
+
+<script type="text/javascript" src="/static/plugins/forms/elastic/jquery.elastic.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/inputlimiter/jquery.inputlimiter.1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/maskedinput/jquery.maskedinput-1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/togglebutton/jquery.toggle.buttons.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/uniform/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/globalize/globalize.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/color-picker/colorpicker.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/timeentry/jquery.timeentry.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/select/select2.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/dualselect/jquery.dualListBox-1.3.min.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/tiny_mce/tinymce.min.js"></script>
+<script type="text/javascript" src="/static/js/supr-theme/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/static/js/supr-theme/jquery-ui-sliderAccess.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/validate/jquery.validate.js"></script>
+<script type="text/javascript" src="/static/plugins/forms/wizard/jquery.form.js"></script>
+
+<!-- Init plugins -->
+
+<script type="text/javascript" src="/static/js/forms.js"></script><!-- Init plugins only for page -->
+
+<script>
+    $("#form-admin-add").validate({
+        rules:{
+            username: {
+                required: true,
+                minlength: 2
+            }
+        },
+        onkeyup:false,
+        focusCleanup:true,
+        success:"valid",
+        submitHandler:function(form){
+            $(form).ajaxSubmit({
+                type:'post',
+                url: $("#form-admin-add").data('action'),
+                dataType: 'json',
+                data:{},
+                success:function(response){
+                    if (response.status == 'success') {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.msg('添加成功，id='+response.result.id,{icon:1,time:10000});
+                        setTimeout(function(){
+                            parent.location.reload(); // 刷新页面
+                            parent.layer.close(index);
+                        },1200);
+                    } else if ( response.status == 'failed') {
+                        parent.layer.msg('添加失败,错误码为' + response.code,{icon:2,time:1000});
+                    }
+                },error:function(data) {
+                    parent.layer.msg('无效的请求',{icon:2,time:1000});
+                }
+            });
+        }
+    });
+</script>
+
+{/block}
