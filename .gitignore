@@ -6,3 +6,4 @@ thinkphp
 /public/upload/
 runtime/
 /application/extra/
+/application/database.php
