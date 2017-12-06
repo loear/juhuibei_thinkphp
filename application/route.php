@@ -11,6 +11,10 @@
 
 use think\Route;
 
+Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
+Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
+
+
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');
 
 Route::get('api/:version/category/all', 'api/:version.Category/getAllCategories');
@@ -21,9 +25,9 @@ Route::get('api/:version/article/:id', 'api/:version.Article/getArticle');
 
 Route::get('api/:version/template/all', 'api/:version.Template/getAllTemplates');
 
-Route::post('api/:version/token/user', 'api/:version.Token/getToken');
+Route::post('api/:version/token/user', 'api/:version.Token/getToken');      // 获取TOKEN
 
-Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken');
+Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken'); // 验证TOKEN
 
 Route::group('amos', function(){ // 后台以amos开始
     // 分类
