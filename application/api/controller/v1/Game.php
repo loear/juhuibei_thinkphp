@@ -14,7 +14,7 @@ class Game
 {
     public function getAllGames()
     {
-        $games = GameModel::all([]);
+        $games = GameModel::all([], ['img'=>function($query){$query->withField('id,url,type');}]);
 
         if ($games->isEmpty()) {
             throw new GameException();

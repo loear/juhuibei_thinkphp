@@ -13,4 +13,9 @@ class Game extends BaseModel
 {
     protected $hidden = ['create_time', 'delete_time', 'update_time'];
 
+    public function img()
+    {
+        return $this->belongsTo('Image', 'image_id', 'id');
+    }
+
 }
