@@ -28,6 +28,7 @@ Route::get('api/:version/template/all', 'api/:version.Template/getAllTemplates')
 Route::post('api/:version/token/user', 'api/:version.Token/getToken');      // 获取TOKEN
 
 Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken'); // 验证TOKEN
+Route::post('api/:version/token/info', 'api/:version.Token/saveUserInfo'); // 验证TOKEN
 
 Route::group('amos', function(){ // 后台以amos开始
     // 分类

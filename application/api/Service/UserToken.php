@@ -64,7 +64,10 @@ class UserToken extends Token
         }
         $cachedValue = $this->prepareCachedValue($wxResult, $uid);
         $token = $this->saveToCache($cachedValue);
-        return $token;
+        return [
+            'uid'   =>  $uid,
+            'token' =>  $token
+        ];
     }
 
     private function saveToCache($cachedValue)
@@ -108,6 +111,13 @@ class UserToken extends Token
             'errorCode' =>  $wxResult['errcode']
         ]);
 
+    }
+
+    public function getOpenId()
+    {
+        $result = curl_get($this->wxLoginUrl);
+        $wxResult = json_decode($result, true);
+        return $wxResult['openid'];
     }
 
 }

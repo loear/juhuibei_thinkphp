@@ -13,6 +13,7 @@ use app\api\service\UserToken;
 use app\api\validate\TokenGet;
 use app\lib\exception\ParameterException;
 use app\api\service\Token as TokenService;
+use app\common\model\User as UserModel;
 
 class Token
 {
@@ -20,10 +21,8 @@ class Token
     {
         (new TokenGet())->goCheck();
         $ut = new UserToken($code);
-        $token = $ut->get();
-        return [
-            'token' =>  $token
-        ];
+        $result = $ut->get();
+        return $result;
     }
 
     public function verifyToken($token='')
@@ -37,5 +36,20 @@ class Token
         return [
             'isValid' => $valid
         ];
+    }
+
+
+    public function saveUserInfo($data)
+    {
+        if (!empty($data) && $data['user_id'] > 0) {
+            $model = UserModel::find($data['user_id']);
+            $model->nickname = $data['nickName'];
+            $model->avatar_url = $data['avatarUrl'];
+            $model->save();
+            return ['status'=>'success'];
+        }
+        throw new ParameterException([
+           '参数错误'
+        ]);
     }
 }
