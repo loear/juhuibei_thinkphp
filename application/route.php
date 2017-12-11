@@ -12,6 +12,7 @@
 use think\Route;
 
 Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
+Route::get('api/:version/activity/list/:id', 'api/:version.Activity/getActivityList', ['id' => '\d+']);  // 聚会活动列表
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 
 

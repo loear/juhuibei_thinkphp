@@ -10,8 +10,6 @@ namespace app\api\controller\v1;
 
 use app\api\validate\ActivityPostSubmit;
 use app\common\model\Activity as ActivityModel;
-use app\common\model\User as UserModel;
-use app\common\model\User;
 use app\lib\exception\ActivityException;
 use think\Request;
 
@@ -26,7 +24,7 @@ class Activity
      */
     public function postActivity()
     {
-         $data = Request::instance()->post();
+        $data = Request::instance()->post();
         (new ActivityPostSubmit())->goCheck();
         $user_id = $data['user_id'];
         $activity_model = new ActivityModel();
@@ -49,6 +47,17 @@ class Activity
         }
 
         throw new ActivityException();
+
+    }
+
+    public function getActivityList($id)
+    {
+        $activity_model = ActivityModel::hasWhere('activity', ['user_id'=>$id])
+            ->with('activity.user')
+            ->select();
+        dump($activity_model->toArray());
+
+
 
     }
 
