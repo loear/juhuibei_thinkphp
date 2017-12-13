@@ -12,9 +12,17 @@
 use think\Route;
 
 Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
-Route::get('api/:version/activity/list/:id', 'api/:version.Activity/getActivityList', ['id' => '\d+']);  // 聚会活动列表
+Route::get(
+    'api/:version/activity/list/:user_id',
+    'api/:version.Activity/getActivityList',
+    ['user_id' => '\d+']
+);  // 聚会活动列表
+Route::get(
+    'api/:version/activity/info/:user_id/:activity_id',
+    'api/:version.Activity/getActivityInfo',
+    ['user_id' => '\d+', 'activity_id' => '\d+']
+); // 聚会活动详情
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
-
 
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');
 

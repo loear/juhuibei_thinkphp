@@ -45,18 +45,27 @@ class Activity
             ]);
             return ['error'=>'0','data'=>'success'];
         }
-
         throw new ActivityException();
-
     }
 
-    public function getActivityList($id)
+    /**
+     * 聚会活动列表
+     *
+     * @param $id 用户的ID 包括发布者 & 参与者
+     */
+    public function getActivityList($user_id)
     {
-        $activity_model = ActivityModel::hasWhere('activity', ['user_id'=>$id])
+        $activity_model = ActivityModel::hasWhere('activity', ['user_id'=>$user_id])
             ->with('activity.user')
             ->select();
         dump($activity_model->toArray());
 
+
+
+    }
+
+    public function getActivityInfo($user_id, $activity_id)
+    {
 
 
     }
