@@ -66,8 +66,56 @@ class Activity
 
     public function getActivityInfo($user_id, $activity_id)
     {
-
-
+        $author = [];
+        $story_author = [];
+        $author_list = [];
+        $share_list = [];
+        $data = [
+           'id'             =>  '2460',
+            'title'         =>  '我也很想他',
+            'cover'         =>  'http://image.wufazhuce.com/Fg9M64Cogg9OM12vVO1CaHQnXONB',
+            'isfirst'       =>  '0',
+            'story_title'   =>  '喜欢就得往前凑，这才是生活的真勇敢',
+            'story'         =>  '\n<p>为了让我们的好朋友好妹妹蒋晗，走出失恋阴霾，重见恋爱天日，上个礼拜，我们几个许久未见的发小难得地聚在一起吃了顿饭。</p>',
+            'lyric'         =>  '那时我们总有好多话\r\n什么事都可以讲',
+            'info'          =>  '所属专辑：Stefanie\r\n演唱者：孙燕姿',
+            'platform'      =>  '1',
+            'music_id'      =>  '376368',
+            'charge_edt'    =>  '（责任编辑：山山  sunshen@wufazhuce.com）',
+            'related_to'    =>  '0',
+            'web_url'       =>  'http://h.xiami.com/one-share.html?id=376368',
+            'praisenum'     =>  '1976',
+            'hide_flag'     =>  '0',
+            'sort'          =>  '0',
+            'maketime'      =>  '2017-12-08 06:00:00',
+            'last_update_date'  =>  '2017-12-07 18:19:19',
+            'read_num'      =>  '58802',
+            'story_summary' =>  '你喜欢他，他喜欢她，她喜欢我，我喜欢你，谁也没错',
+            'audio'         =>  '',
+            'anchor'        =>  '',
+            'editor_email'  =>  'sunshen@wufazhuce.com',
+            'related_musics'=>  '',
+            'album'         =>  'Stefanie',
+            'start_video'   =>  '',
+            'media_type'    =>  '1',
+            'copyright'     =>  '',
+            'audio_duration'=>  '0',
+            'author'        =>  $author,
+            'story_author'  =>  $story_author,
+            'author_list'   =>  $author_list,
+            'feeds_cover'   =>  'http://image.wufazhuce.com/FuKDd9NZOoR43n5m1O6_Mp3XC3sH?imageMogr2/auto-orient/blur/50x50/quality/75|imageslim',
+            'next_id'       =>  '2487',
+            'previous_id'   =>  '2486',
+            'tag_list'      =>  [],
+            'share_list'    =>  $share_list,
+            'sharenum'      =>  637,
+            'commentnum'    =>  456
+        ];
+        $result = [
+            'res'   =>  0,
+            'data'  =>  $data
+        ];
+        return $result;
     }
 
 }
