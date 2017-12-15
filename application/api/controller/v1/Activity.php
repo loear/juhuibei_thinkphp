@@ -10,6 +10,7 @@ namespace app\api\controller\v1;
 
 use app\api\validate\ActivityPostSubmit;
 use app\common\model\Activity as ActivityModel;
+use app\common\model\Info as InfoModel;
 use app\lib\exception\ActivityException;
 use think\Request;
 
@@ -41,7 +42,9 @@ class Activity
         if ($activity_model->id) {
             $activity_model->activity()->save([
                 'user_id'       =>  $user_id,
-                'activity_id'   =>  $activity_model->id
+                'activity_id'   =>  $activity_model->id,
+                'is_master'     =>  1,  // 创建者身份
+                'is_coming'     =>  1   // 创建者也是参与者
             ]);
             return ['error'=>'0','data'=>'success'];
         }
@@ -51,6 +54,7 @@ class Activity
     /**
      * 聚会活动列表
      *
+     * @url /api/v1/activity/list/2
      * @param $id 用户的ID 包括发布者 & 参与者
      */
     public function getActivityList($user_id)
@@ -58,10 +62,16 @@ class Activity
         $activity_model = ActivityModel::hasWhere('activity', ['user_id'=>$user_id])
             ->with('activity.user')
             ->select();
-        dump($activity_model->toArray());
-
-
-
+        $activity_list = $activity_model->toArray();
+        $now_time = time();
+        foreach ($activity_list as $k=>$v) {
+            $start_time_diff = ($v['start_time'] - $now_time) > 0 ? ($v['start_time'] - $now_time) : 0;
+            $end_time_diff = ($v['end_time'] - $now_time) > 0 ? ($v['end_time'] - $now_time) : 0 ;
+            $activity_list[$k]['_start_time_diff'] = $start_time_diff;
+            $activity_list[$k]['_end_time_diff'] = $end_time_diff;
+            $activity_list[$k]['_numbers'] = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$v['id'], 'is_coming'=>1])->count();
+        }
+        return $activity_list;
     }
 
     public function getActivityInfo($user_id, $activity_id)
