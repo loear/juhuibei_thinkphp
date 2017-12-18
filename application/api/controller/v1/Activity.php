@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 use app\api\validate\ActivityPostSubmit;
 use app\common\model\Activity as ActivityModel;
 use app\common\model\Info as InfoModel;
+use app\common\model\Image as ImageModel;
 use app\lib\exception\ActivityException;
 use think\Request;
 
@@ -35,7 +36,8 @@ class Activity
         $activity_model->end_time = strtotime($data['end_date'] . ' ' . $data['end_time']);
         $activity_model->gourmet_title = $data['gourmet_title'];
         $activity_model->gourmet_address = $data['gourmet_address'];
-        $activity_model->geopoint = $data['geopoint'];
+        $activity_model->latitude = $data['latitude'];
+        $activity_model->longitude = $data['longitude'];
         $activity_model->is_only_group = $data['is_only_group'] ? '1' : '0';
         $activity_model->numbers = $data['numbers'];
         $activity_model->save();
@@ -45,6 +47,10 @@ class Activity
                 'activity_id'   =>  $activity_model->id,
                 'is_master'     =>  1,  // 创建者身份
                 'is_coming'     =>  1   // 创建者也是参与者
+            ]);
+            $activity_model->activity_image()->save([
+                'image_id'      =>  $data['image_id'],
+                'activity_id'   =>  $activity_model->id
             ]);
             return ['error'=>'0','data'=>'success'];
         }
@@ -150,4 +156,17 @@ class Activity
         return ['res'=>0, 'data'=>$token];
     }
 
+    public function saveQiniuImage(Request $request)
+    {
+        $url = $request->post('url');
+        if ($url) {
+            $model = new ImageModel();
+            $model->url     = $url;
+            $model->type    = 2;
+            $model->name    = '';
+            $model->save();
+            return ['res'=>0, 'data'=>$model->id];
+        }
+        return ['res'=>1, 'msg'=>'URL不能为空'];
+    }
 }
