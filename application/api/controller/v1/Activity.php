@@ -125,7 +125,29 @@ class Activity
             'res'   =>  0,
             'data'  =>  $data
         ];
+
+        // 1. 通过活动ID和创建用户ID获取信息
+        $result = ActivityModel::hasWhere('activity', ['user_id'=>$user_id, 'activity_id'=>$activity_id, 'is_master'=>1])
+            ->with('activity.user')
+            ->find();
+
         return $result;
+    }
+
+    /**
+     * 获取七牛上传TOKEN
+     * @return array
+     */
+    public function getUploadToken()
+    {
+        require_once '../vendor/qiniu-php-sdk/autoload.php';
+        $accessKey = config('qiniu.access_key');
+        $secretKey = config('qiniu.secret_key');;
+        $auth = new \Qiniu\Auth($accessKey, $secretKey);
+        $bucket = config('qiniu.bucket_name');
+        // 生成上传Token
+        $token = $auth->uploadToken($bucket);
+        return ['res'=>0, 'data'=>$token];
     }
 
 }

@@ -22,6 +22,7 @@ Route::get(
     'api/:version.Activity/getActivityInfo',
     ['user_id' => '\d+', 'activity_id' => '\d+']
 ); // 聚会活动详情
+Route::get('api/:version/activity/upload_token', 'api/:version.Activity/getUploadToken');   // 获取七牛上传TOKEN
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');

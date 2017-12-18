@@ -59,3 +59,5 @@ www  WEB部署目录（或者子目录）
 ├─README.md             README 文件
 ├─think                 命令行入口文件
 ~~~
+
+- https://github.com/Natoto/qiniu-wxapp-demo
