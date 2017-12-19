@@ -13,9 +13,14 @@ class Activity extends BaseModel
 {
     protected $hidden = ['create_time', 'delete_time', 'update_time'];
 
-    public function activity()
+    public function info()
     {
         return $this->hasMany('Info', 'activity_id', 'id');
+    }
+
+    public function activityImage()
+    {
+        return $this->hasMany('ActivityImage', 'activity_id', 'id');
     }
 
 }

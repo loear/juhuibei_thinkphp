@@ -42,13 +42,13 @@ class Activity
         $activity_model->numbers = $data['numbers'];
         $activity_model->save();
         if ($activity_model->id) {
-            $activity_model->activity()->save([
+            $activity_model->info()->save([
                 'user_id'       =>  $user_id,
                 'activity_id'   =>  $activity_model->id,
                 'is_master'     =>  1,  // 创建者身份
                 'is_coming'     =>  1   // 创建者也是参与者
             ]);
-            $activity_model->activity_image()->save([
+            $activity_model->activityImage()->save([
                 'image_id'      =>  $data['image_id'],
                 'activity_id'   =>  $activity_model->id
             ]);
