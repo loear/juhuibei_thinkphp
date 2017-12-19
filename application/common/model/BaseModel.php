@@ -18,6 +18,8 @@ class BaseModel extends Model
         $finalUrl = str_replace('\\', '/', $value);
         if ($data['type'] == 1) {
             $finalUrl = config('setting.img_prefix') . $finalUrl;
+        } else if ($data['type'] == 2) {
+            $finalUrl = 'http://' . $finalUrl;
         }
         return $finalUrl;
     }

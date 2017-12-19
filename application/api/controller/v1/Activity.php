@@ -65,8 +65,8 @@ class Activity
      */
     public function getActivityList($user_id)
     {
-        $activity_model = ActivityModel::hasWhere('activity', ['user_id'=>$user_id])
-            ->with('activity.user')
+        $activity_model = ActivityModel::hasWhere('info', ['user_id'=>$user_id])
+            ->with(['info.user', 'activityImage.img'])
             ->select();
         $activity_list = $activity_model->toArray();
         $now_time = time();

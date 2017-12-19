@@ -6,9 +6,6 @@ use app\common\lib\Data;
 
 class Image extends BaseModel
 {
-    protected $hidden = ['create_time', 'delete_time', 'update_time'];
-    protected $autoWriteTimestamp = true;
-
     public function getUrlAttr($value, $data)
     {
         return $this->prefixImgUrl($value, $data);
