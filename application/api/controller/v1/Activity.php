@@ -133,11 +133,10 @@ class Activity
         ];
 
         // 1. 通过活动ID和创建用户ID获取信息
-        $result = ActivityModel::hasWhere('activity', ['user_id'=>$user_id, 'activity_id'=>$activity_id, 'is_master'=>1])
-            ->with('activity.user')
+        $result = ActivityModel::hasWhere('info', ['user_id'=>$user_id, 'activity_id'=>$activity_id])
+            ->with(['info.user', 'activityImage.img'])
             ->find();
-
-        return $result;
+        return ['res'=>0, 'data'=>$result];
     }
 
     /**
