@@ -12,16 +12,24 @@
 use think\Route;
 
 Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
-Route::get(
+Route::get( // 获取聚会活动列表
     'api/:version/activity/list/:user_id',
     'api/:version.Activity/getActivityList',
     ['user_id' => '\d+']
-);  // 聚会活动列表
-Route::get(
+);
+Route::get( // 获取聚会活动详情
     'api/:version/activity/info/:user_id/:activity_id',
     'api/:version.Activity/getActivityInfo',
     ['user_id' => '\d+', 'activity_id' => '\d+']
-); // 聚会活动详情
+);
+Route::post( // 保存 用户关联聚会
+    'api/:version/activity/save_user',
+    'api/:version.Activity/saveActivityUser'
+);
+Route::post( // 解密
+    'api/:version/activity/encrypt',
+    'api/:version.Activity/enCryptedData'
+);
 Route::get('api/:version/activity/upload_token', 'api/:version.Activity/getUploadToken');   // 获取七牛上传TOKEN
 Route::post('api/:version/activity/save_image', 'api/:version.Activity/saveQiniuImage');   // 获取七牛上传TOKEN
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表

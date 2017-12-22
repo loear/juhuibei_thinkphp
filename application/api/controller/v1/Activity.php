@@ -12,6 +12,7 @@ use app\api\validate\ActivityPostSubmit;
 use app\common\model\Activity as ActivityModel;
 use app\common\model\Info as InfoModel;
 use app\common\model\Image as ImageModel;
+use app\lib\encrypt\WXBizDataCrypt;
 use app\lib\exception\ActivityException;
 use think\Request;
 
@@ -122,4 +123,43 @@ class Activity
         }
         return ['res'=>1, 'msg'=>'URL不能为空'];
     }
+
+    /**
+     * 保存 用户聚会关联信息
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function saveActivityUser(Request $request)
+    {
+        $user_id = $request->post('user_id');
+        $activity_id = $request->post('activity_id');
+        $resault = ActivityModel::hasWhere('info', ['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+        if (!$resault) {
+            $activity_model = ActivityModel::find($activity_id);
+            $activity_model->info()->save([
+                'user_id'       =>  $user_id,
+                'activity_id'   =>  $activity_model->id,
+            ]);
+            return ['error'=>'0','data'=>'success'];
+        }
+        return ['error'=>'0','data'=>'success'];
+    }
+
+    public function enCryptedData(Request $request)
+    {
+        $encryptedData = $request->post('encryptedData');
+        $iv = $request->post('iv');
+        $token = $request->post('token');
+        $appid = config('wx.appid');
+        $session_key = cache($token)['session_key'];
+        $pc = new WXBizDataCrypt($appid, $session_key);
+        $errCode = $pc->decryptData($encryptedData, $iv, $data);
+        if ($errCode == 0) {
+            return $data;
+        } else {
+            return $errCode;
+        }
+    }
+
 }
