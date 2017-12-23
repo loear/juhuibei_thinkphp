@@ -152,7 +152,7 @@ class Activity
         $iv = $request->post('iv');
         $token = $request->post('token');
         $appid = config('wx.appid');
-        $session_key = cache($token)['session_key'];
+        $session_key = json_decode(cache($token), true)['session_key'];
         $pc = new WXBizDataCrypt($appid, $session_key);
         $errCode = $pc->decryptData($encryptedData, $iv, $data);
         if ($errCode == 0) {
