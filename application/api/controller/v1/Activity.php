@@ -11,7 +11,7 @@ namespace app\api\controller\v1;
 use app\api\validate\ActivityPostSubmit;
 use app\common\model\Activity as ActivityModel;
 use app\common\model\Info as InfoModel;
-use app\common\model\Image as ImageModel;
+use app\common\model\User as UserModel;
 use app\lib\encrypt\WXBizDataCrypt;
 use app\lib\exception\ActivityException;
 use think\Request;
@@ -25,7 +25,7 @@ class Activity
      * @return \think\response\Json
      * @throws ActivityException
      */
-    public function postActivity()
+    public function saveActivity()
     {
         $data = Request::instance()->post();
         (new ActivityPostSubmit())->goCheck();
@@ -39,7 +39,7 @@ class Activity
         $activity_model->gourmet_address = $data['gourmet_address'];
         $activity_model->latitude = $data['latitude'];
         $activity_model->longitude = $data['longitude'];
-        $activity_model->is_only_group = $data['is_only_group'] ? '1' : '0';
+        // $activity_model->is_only_group = $data['is_only_group'] ? '1' : '0';
         $activity_model->numbers = $data['numbers'];
         $activity_model->save();
         if ($activity_model->id) {
@@ -47,13 +47,23 @@ class Activity
                 'user_id'       =>  $user_id,
                 'activity_id'   =>  $activity_model->id,
                 'is_master'     =>  1,  // 创建者身份
-                'is_coming'     =>  1   // 创建者也是参与者
+                'is_coming'     =>  1,  // 创建者也是参与者
+                'picture_number'=>  2
             ]);
             $activity_model->activityImage()->save([
                 'image_id'      =>  $data['image_id'],
-                'activity_id'   =>  $activity_model->id
+                'activity_id'   =>  $activity_model->id,
+                'name'          =>  '聚会封面',
+                'description'   =>  '这张照片让我想起了...'
             ]);
-            return ['error'=>'0','data'=>'success'];
+            $user_model = UserModel::find($user_id);
+            $user_model->username = $data['username'];
+            $user_model->phone    = $data['phone'];
+            $user_model->save();
+            if ($user_model->id) {
+                return ['res'=>0,'data'=>'保存成功'];
+            }
+            return ['res'=>-1,'data'=>'保存成功'];
         }
         throw new ActivityException();
     }
@@ -132,7 +142,7 @@ class Activity
                 'activity_id'   =>  $activity_model->id,
                 'user_id'       =>  $user_id,
                 'name'          =>  '聚会照片',
-                'description'   =>  '这张照片我就想起了...'
+                'description'   =>  '这张照片让我想起了...'
             ]);
             $result = ActivityModel::with(['info.user', 'activityImage.img'])->find($activity_id);
             $result->_numbers = InfoModel::where(['activity_id'=>$activity_id, 'is_coming'=>1])->count();
@@ -164,6 +174,23 @@ class Activity
             return ['error'=>'0','data'=>'success'];
         }
         return ['error'=>'0','data'=>'success'];
+    }
+
+    public function saveComingInfo(Request $request)
+    {
+        $user_id = $request->post('user_id');
+        $activity_id = $request->post('activity_id');
+        $username = $request->post('username');
+        $phone = $request->post('phone');
+        if ($username == '' || $phone == '' || $user_id == '' || $activity_id == '') return ['res'=>-1, 'msg'=>'参数不能为空'];
+        $user_model = UserModel::find($user_id);
+        $user_model->username = $username;
+        $user_model->phone = $phone;
+        $user_model->save();
+        $info_model = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->find();
+        $info_model->is_coming = 1;
+        $info_model->save();
+        return ['res'=>0, 'data'=>'保存成功'];
     }
 
     public function enCryptedData(Request $request)

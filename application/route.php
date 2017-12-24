@@ -11,7 +11,10 @@
 
 use think\Route;
 
-Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
+Route::post( // 聚会活动提交
+    'api/:version/activity_submit',
+    'api/:version.Activity/saveActivity'
+);
 Route::get( // 获取聚会活动列表
     'api/:version/activity_list/:user_id',
     'api/:version.Activity/getActivityList',
@@ -55,6 +58,10 @@ Route::post( // 保存上传至七牛图片
 Route::post( // 保存聚会图片关联信息
     'api/:version/save_activity_image',
     'api/:version.Activity/saveActivityImage'
+);
+Route::post( // 保存参加聚会人员信息
+    'api/:version/save_coming',
+    'api/:version.Activity/saveComingInfo'
 );
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 
