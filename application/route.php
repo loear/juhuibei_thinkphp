@@ -18,9 +18,9 @@ Route::get( // 获取聚会活动列表
     ['user_id' => '\d+']
 );
 Route::get( // 获取聚会活动详情
-    'api/:version/activity/info/:user_id/:activity_id',
+    'api/:version/activity_info/:id',
     'api/:version.Activity/getActivityInfo',
-    ['user_id' => '\d+', 'activity_id' => '\d+']
+    ['id' => '\d+']
 );
 Route::post( // 保存 用户关联聚会
     'api/:version/activity/save_user',
@@ -29,6 +29,11 @@ Route::post( // 保存 用户关联聚会
 Route::post( // 解密
     'api/:version/activity/encrypt',
     'api/:version.Activity/enCryptedData'
+);
+Route::get( // 聚会信息
+    'api/:version/info/:user_id/:activity_id',
+    'api/:version.Info/getUserActivityInfo',
+    ['user_id' => '\d+', 'activity_id' => '\d+']
 );
 Route::get('api/:version/activity/upload_token', 'api/:version.Activity/getUploadToken');   // 获取七牛上传TOKEN
 Route::post('api/:version/activity/save_image', 'api/:version.Activity/saveQiniuImage');   // 获取七牛上传TOKEN

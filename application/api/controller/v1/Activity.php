@@ -81,13 +81,16 @@ class Activity
         return $activity_list;
     }
 
-    public function getActivityInfo($user_id, $activity_id)
+    /**
+     * 获取聚会详细数据
+     * @param $activity_id
+     * @return array
+     */
+    public function getActivityInfo($id)
     {
         // 1. 通过活动ID和创建用户ID获取信息
-        $result = ActivityModel::hasWhere('info', ['user_id'=>$user_id, 'activity_id'=>$activity_id])
-            ->with(['info.user', 'activityImage.img'])
-            ->find();
-        $result->_numbers = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id, 'is_coming'=>1])->count();
+        $result = ActivityModel::with(['info.user', 'activityImage.img'])->find($id);
+        $result->_numbers = InfoModel::where(['activity_id'=>$id, 'is_coming'=>1])->count();
         $result->_start_time = date("Y-m-d H:i", $result->start_time);
         $now_time = time();
         $result->_countdown = ($result->start_time - $now_time) >  0 ? ($result->start_time - $now_time) : 0;

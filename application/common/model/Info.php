@@ -15,6 +15,11 @@ class Info extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo('User', 'user_id', 'id')->field('id,nickname,username,avatar_url,phone');;
+        return $this->belongsTo('User', 'user_id', 'id')->field('id,nickname,username,avatar_url,phone');
+    }
+
+    public function userInfo()
+    {
+        return $this->hasOne('User', 'id', 'user_id');
     }
 }
