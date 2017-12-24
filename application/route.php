@@ -13,7 +13,7 @@ use think\Route;
 
 Route::post('api/:version/activity/submit', 'api/:version.Activity/postActivity');  // 聚会活动提交
 Route::get( // 获取聚会活动列表
-    'api/:version/activity/list/:user_id',
+    'api/:version/activity_list/:user_id',
     'api/:version.Activity/getActivityList',
     ['user_id' => '\d+']
 );
@@ -23,7 +23,7 @@ Route::get( // 获取聚会活动详情
     ['id' => '\d+']
 );
 Route::post( // 保存 用户关联聚会
-    'api/:version/activity/save_user',
+    'api/:version/save_activity_user',
     'api/:version.Activity/saveActivityUser'
 );
 Route::post( // 解密
@@ -35,8 +35,27 @@ Route::get( // 聚会信息
     'api/:version.Info/getUserActivityInfo',
     ['user_id' => '\d+', 'activity_id' => '\d+']
 );
-Route::get('api/:version/activity/upload_token', 'api/:version.Activity/getUploadToken');   // 获取七牛上传TOKEN
-Route::post('api/:version/activity/save_image', 'api/:version.Activity/saveQiniuImage');   // 获取七牛上传TOKEN
+Route::get( // 照片信息
+    'api/:version/picture/:image_id',
+    'api/:version.Picture/getImageInfo',
+    ['image_id' => '\d+']
+);
+Route::post( // 保存照片名
+    'api/:version/save_picture_name',
+    'api/:version.Picture/saveImageName'
+);
+Route::get( // 获取七牛上传TOKEN
+    'api/:version/upload_token',
+    'api/:version.Activity/getUploadToken'
+);
+Route::post( // 保存上传至七牛图片
+    'api/:version/save_image',
+    'api/:version.Picture/saveQiniuImage'
+);
+Route::post( // 保存聚会图片关联信息
+    'api/:version/save_activity_image',
+    'api/:version.Activity/saveActivityImage'
+);
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');

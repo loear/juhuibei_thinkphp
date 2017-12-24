@@ -3,9 +3,12 @@
 namespace app\common\model;
 
 use app\common\lib\Data;
+use traits\model\SoftDelete;
 
 class Image extends BaseModel
 {
+    use SoftDelete;
+
     public function getUrlAttr($value, $data)
     {
         return $this->prefixImgUrl($value, $data);

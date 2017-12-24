@@ -90,11 +90,15 @@ class Activity
     {
         // 1. 通过活动ID和创建用户ID获取信息
         $result = ActivityModel::with(['info.user', 'activityImage.img'])->find($id);
-        $result->_numbers = InfoModel::where(['activity_id'=>$id, 'is_coming'=>1])->count();
-        $result->_start_time = date("Y-m-d H:i", $result->start_time);
-        $now_time = time();
-        $result->_countdown = ($result->start_time - $now_time) >  0 ? ($result->start_time - $now_time) : 0;
-        return ['res'=>0, 'data'=>$result];
+        if ($result) {
+            $result->_numbers = InfoModel::where(['activity_id' => $id, 'is_coming' => 1])->count();
+            $result->_start_time = date("Y-m-d H:i", $result->start_time);
+            $now_time = time();
+            $result->_countdown = ($result->start_time - $now_time) > 0 ? ($result->start_time - $now_time) : 0;
+            return ['res' => 0, 'data' => $result];
+        }
+        return ['res' => -1, 'msg' => '获取数据失败'];
+
     }
 
     /**
@@ -113,18 +117,31 @@ class Activity
         return ['res'=>0, 'data'=>$token];
     }
 
-    public function saveQiniuImage(Request $request)
+    /**
+     * @param Request $request
+     */
+    public function saveActivityImage(Request $request)
     {
-        $url = $request->post('url');
-        if ($url) {
-            $model = new ImageModel();
-            $model->url     = $url;
-            $model->type    = 2;
-            $model->name    = '';
-            $model->save();
-            return ['res'=>0, 'data'=>$model->id];
+        $image_id = $request->post('image_id');
+        $user_id = $request->post('user_id');
+        $activity_id = $request->post('activity_id');
+        $activity_model = ActivityModel::find($activity_id);
+        if ($activity_model) {
+            $activity_model->activityImage()->save([
+                'image_id'      =>  $image_id,
+                'activity_id'   =>  $activity_model->id,
+                'user_id'       =>  $user_id,
+                'name'          =>  '聚会照片',
+                'description'   =>  '这张照片我就想起了...'
+            ]);
+            $result = ActivityModel::with(['info.user', 'activityImage.img'])->find($activity_id);
+            $result->_numbers = InfoModel::where(['activity_id'=>$activity_id, 'is_coming'=>1])->count();
+            $result->_start_time = date("Y-m-d H:i", $result->start_time);
+            $now_time = time();
+            $result->_countdown = ($result->start_time - $now_time) >  0 ? ($result->start_time - $now_time) : 0;
+            return ['res'=>0, 'data'=>$result];
         }
-        return ['res'=>1, 'msg'=>'URL不能为空'];
+        return ['res'=>-1, 'msg'=>'保存失败'];
     }
 
     /**
