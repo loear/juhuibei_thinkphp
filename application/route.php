@@ -63,6 +63,12 @@ Route::post( // 保存参加聚会人员信息
     'api/:version/save_coming',
     'api/:version.Activity/saveUserComing'
 );
+Route::get( // 获取用户信息
+    'api/:version/user_info/:id',
+    'api/:version.User/getUserInfo',
+    ['id' => '\d+']
+);
+
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');

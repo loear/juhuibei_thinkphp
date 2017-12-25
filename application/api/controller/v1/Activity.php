@@ -94,7 +94,7 @@ class Activity
             $end_time_diff      = ($v['end_time'] - $now_time) > 0 ? ($v['end_time'] - $now_time) : 0 ;
             $activity_list[$k]['_start_time_diff'] = $start_time_diff;
             $activity_list[$k]['_end_time_diff']   = $end_time_diff;
-            $activity_list[$k]['_numbers']         = InfoModel::where(['user_id'=>$id, 'activity_id'=>$v['id'], 'is_coming'=>1])->count();
+            $activity_list[$k]['_numbers']         = InfoModel::where(['activity_id'=>$v['id'], 'is_coming'=>1])->count();
         }
         return ['res'=>0, 'data'=>$activity_list];
     }
