@@ -7,8 +7,10 @@
  */
 
 namespace app\api\controller\v1;
+use app\api\validate\ActivityUserSave;
 use app\common\model\Info as InfoModel;
 use app\common\model\ActivityImage as ActivityImageModel;
+use app\lib\exception\InfoMissException;
 
 class Info
 {
@@ -19,15 +21,16 @@ class Info
      */
     public function getUserActivityInfo($user_id, $activity_id)
     {
-        $data = InfoModel::with(['userInfo'=>function($query){$query->withField('id,nickname,username,avatar_url,phone');}])
+        (new ActivityUserSave())->goCheck();
+        $info_model = InfoModel::with(['userInfo'=>function($query){$query->withField('id,nickname,username,avatar_url,phone');}])
             ->where(['user_id' => $user_id, 'activity_id' => $activity_id])
             ->find();
 
-        if ($data) {
-            $data['_picture_number'] = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
-            return ['res' => 0, 'data' => $data];
+        if ($info_model) {
+            $info_model->_picture_number = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+            return ['res' => 0, 'data' => $info_model];
         }
-        return ['res' => 1, 'msg' => '获取数据失败'];
+        throw new InfoMissException();
     }
 
 }

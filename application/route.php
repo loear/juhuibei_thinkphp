@@ -16,9 +16,9 @@ Route::post( // 聚会活动提交
     'api/:version.Activity/saveActivity'
 );
 Route::get( // 获取聚会活动列表
-    'api/:version/activity_list/:user_id',
+    'api/:version/activity_list/:id',
     'api/:version.Activity/getActivityList',
-    ['user_id' => '\d+']
+    ['id' => '\d+']
 );
 Route::get( // 获取聚会活动详情
     'api/:version/activity_info/:id',
@@ -39,9 +39,9 @@ Route::get( // 聚会信息
     ['user_id' => '\d+', 'activity_id' => '\d+']
 );
 Route::get( // 照片信息
-    'api/:version/picture/:image_id',
+    'api/:version/picture/:id',
     'api/:version.Picture/getImageInfo',
-    ['image_id' => '\d+']
+    ['id' => '\d+']
 );
 Route::post( // 保存照片名
     'api/:version/save_picture_name',
@@ -61,7 +61,7 @@ Route::post( // 保存聚会图片关联信息
 );
 Route::post( // 保存参加聚会人员信息
     'api/:version/save_coming',
-    'api/:version.Activity/saveComingInfo'
+    'api/:version.Activity/saveUserComing'
 );
 Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
 

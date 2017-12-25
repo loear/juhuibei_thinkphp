@@ -31,8 +31,6 @@ class BaseValidate extends Validate
 //                'errorCode' =>  10002
             ]);
             throw $e;
-            /*$error = $this->error;
-            throw new Exception($error);*/
         } else {
             return true;
         }
@@ -44,7 +42,6 @@ class BaseValidate extends Validate
             return true;
         } else {
             return false;
-            // return $field . '必须是正整数';
         }
     }
 

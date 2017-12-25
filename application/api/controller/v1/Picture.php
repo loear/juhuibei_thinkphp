@@ -7,8 +7,13 @@
  */
 
 namespace app\api\controller\v1;
+use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\ImageNameSave;
+use app\api\validate\QiniuImageSave;
 use app\common\model\ActivityImage as ActivityImageModel;
 use app\common\model\Image as ImageModel;
+use app\lib\exception\ActivityException;
+use app\lib\exception\ImageMissException;
 use think\Request;
 
 class Picture
@@ -21,16 +26,17 @@ class Picture
      */
     public function saveQiniuImage(Request $request)
     {
+        (new QiniuImageSave())->goCheck();
         $url = $request->post('url');
-        if ($url) {
-            $model = new ImageModel();
-            $model->url     = $url;
-            $model->type    = 2;
-            $model->name    = '';
-            $model->save();
+        $model = new ImageModel();
+        $model->url     = $url;
+        $model->type    = 2;
+        $model->name    = '';
+        $model->save();
+        if ($model->id) {
             return ['res'=>0, 'data'=>$model->id];
         }
-        return ['res'=>-1, 'msg'=>'URL不能为空'];
+        throw new ActivityException();
     }
 
     /**
@@ -39,19 +45,20 @@ class Picture
      * @param $image_id
      * @return array
      */
-    public function getImageInfo($image_id)
+    public function getImageInfo($id)
     {
+        (new IDMustBePostiveInt())->goCheck();
         $data = ActivityImageModel::with([
-            'userInfo'  =>function($query){$query->withField('id,nickname,username,avatar_url,phone');},
-        'imgInfo' =>function($query){$query->withField('id,url,type');}
+            'userInfo'  =>  function($query){$query->withField('id,nickname,username,avatar_url,phone');},
+            'imgInfo'   =>  function($query){$query->withField('id,url,type');}
         ])
-            ->where(['image_id'=>$image_id])
-        ->find();
+            ->where(['image_id'=>$id])
+            ->find();
         if ($data) {
-            $data['_data'] = date('Y年m月d日', strtotime($data->update_time));
+            $data->_data = date('Y年m月d日', strtotime($data->update_time));
             return ['res' => 0, 'data' => $data];
         }
-        return ['res' => 1, 'msg' => '获取数据失败'];
+        throw new ImageMissException();
     }
 
     /**
@@ -62,15 +69,16 @@ class Picture
      */
     public function saveImageName(Request $request)
     {
+        (new ImageNameSave())->goCheck();
         $image_id = $request->post('image_id');
-        $name = $request->post('name');
+        $name     = $request->post('name');
         $model = ActivityImageModel::where(['image_id'=>$image_id])->find();
-        $model->name = $name;
-        $model->save();
         if ($model->id) {
-            return ['res'=>0, 'data'=>$model->id];
+            $model->name = $name;
+            $model->save();
+            return ['res'=>0, 'data'=>'保存成功'];
         }
-        return ['res'=>-1, 'msg'=>'保存失败'];
+        throw new ActivityException();
     }
 
 

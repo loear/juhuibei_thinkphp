@@ -8,12 +8,17 @@
 
 namespace app\api\controller\v1;
 
-use app\api\validate\ActivityPostSubmit;
+use app\api\validate\ActivitySave;
+use app\api\validate\ActivityImageSave;
+use app\api\validate\ActivityUserSave;
+use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\UserComingSave;
 use app\common\model\Activity as ActivityModel;
 use app\common\model\Info as InfoModel;
 use app\common\model\User as UserModel;
 use app\lib\encrypt\WXBizDataCrypt;
 use app\lib\exception\ActivityException;
+use app\lib\exception\ActivityMissException;
 use think\Request;
 
 class Activity
@@ -21,14 +26,14 @@ class Activity
     /**
      * 聚会活动提交
      *
-     * @url /api/v1/activity/submit
+     * @url /api/v1/activity_submit
      * @return \think\response\Json
      * @throws ActivityException
      */
-    public function saveActivity()
+    public function saveActivity(Request $request)
     {
-        $data = Request::instance()->post();
-        (new ActivityPostSubmit())->goCheck();
+        (new ActivitySave())->goCheck();
+        $data = $request->post();
         $user_id = $data['user_id'];
         $activity_model = new ActivityModel();
         $activity_model->title = $data['title'];
@@ -48,7 +53,7 @@ class Activity
                 'activity_id'   =>  $activity_model->id,
                 'is_master'     =>  1,  // 创建者身份
                 'is_coming'     =>  1,  // 创建者也是参与者
-                'picture_number'=>  2
+                'picture_number'=>  2   // 创建者可以上传两张照片
             ]);
             $activity_model->activityImage()->save([
                 'image_id'      =>  $data['image_id'],
@@ -61,54 +66,60 @@ class Activity
             $user_model->phone    = $data['phone'];
             $user_model->save();
             if ($user_model->id) {
-                return ['res'=>0,'data'=>'保存成功'];
+                return ['res'=>0, 'data'=>'保存成功'];
             }
-            return ['res'=>-1,'data'=>'保存成功'];
         }
         throw new ActivityException();
     }
 
     /**
-     * 聚会活动列表
+     * 获取聚会活动列表
      *
-     * @url /api/v1/activity/list/2
-     * @param $id 用户的ID 包括发布者 & 参与者
+     * @url /api/v1/activity_list/2
+     * @param $id
+     * @return array
+     * @throws ActivityMissException
      */
-    public function getActivityList($user_id)
+    public function getActivityList($id)
     {
-        $activity_model = ActivityModel::hasWhere('info', ['user_id'=>$user_id])
+        (new IDMustBePostiveInt())->goCheck();
+        $activity_model = ActivityModel::hasWhere('info', ['user_id'=>$id])
             ->with(['info.user', 'activityImage.img'])
             ->select();
         $activity_list = $activity_model->toArray();
+        if (!$activity_list) throw new ActivityMissException();
         $now_time = time();
         foreach ($activity_list as $k=>$v) {
-            $start_time_diff = ($v['start_time'] - $now_time) > 0 ? ($v['start_time'] - $now_time) : 0;
-            $end_time_diff = ($v['end_time'] - $now_time) > 0 ? ($v['end_time'] - $now_time) : 0 ;
+            $start_time_diff    = ($v['start_time'] - $now_time) > 0 ? ($v['start_time'] - $now_time) : 0;
+            $end_time_diff      = ($v['end_time'] - $now_time) > 0 ? ($v['end_time'] - $now_time) : 0 ;
             $activity_list[$k]['_start_time_diff'] = $start_time_diff;
-            $activity_list[$k]['_end_time_diff'] = $end_time_diff;
-            $activity_list[$k]['_numbers'] = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$v['id'], 'is_coming'=>1])->count();
+            $activity_list[$k]['_end_time_diff']   = $end_time_diff;
+            $activity_list[$k]['_numbers']         = InfoModel::where(['user_id'=>$id, 'activity_id'=>$v['id'], 'is_coming'=>1])->count();
         }
-        return $activity_list;
+        return ['res'=>0, 'data'=>$activity_list];
     }
 
     /**
      * 获取聚会详细数据
-     * @param $activity_id
+     *
+     * @url /api/v1/activity_info/2
+     * @param $id
      * @return array
+     * @throws ActivityMissException
      */
     public function getActivityInfo($id)
     {
+        (new IDMustBePostiveInt())->goCheck();
         // 1. 通过活动ID和创建用户ID获取信息
-        $result = ActivityModel::with(['info.user', 'activityImage.img'])->find($id);
-        if ($result) {
-            $result->_numbers = InfoModel::where(['activity_id' => $id, 'is_coming' => 1])->count();
-            $result->_start_time = date("Y-m-d H:i", $result->start_time);
+        $activity_model = ActivityModel::with(['info.user', 'activityImage.img'])->find($id);
+        if ($activity_model) {
             $now_time = time();
-            $result->_countdown = ($result->start_time - $now_time) > 0 ? ($result->start_time - $now_time) : 0;
-            return ['res' => 0, 'data' => $result];
+            $activity_model->_numbers    = InfoModel::where(['activity_id' => $id, 'is_coming' => 1])->count();
+            $activity_model->_start_time = date("Y-m-d H:i", $activity_model->start_time);
+            $activity_model->_countdown  = ($activity_model->start_time - $now_time) > 0 ? ($activity_model->start_time - $now_time) : 0;
+            return ['res' => 0, 'data' => $activity_model];
         }
-        return ['res' => -1, 'msg' => '获取数据失败'];
-
+        throw new ActivityMissException();
     }
 
     /**
@@ -128,15 +139,20 @@ class Activity
     }
 
     /**
+     * 保存聚会照片
+     *
      * @param Request $request
+     * @return array
+     * @throws ActivityException
      */
     public function saveActivityImage(Request $request)
     {
-        $image_id = $request->post('image_id');
-        $user_id = $request->post('user_id');
-        $activity_id = $request->post('activity_id');
+        (new ActivityImageSave())->goCheck();
+        $image_id       = $request->post('image_id');
+        $user_id        = $request->post('user_id');
+        $activity_id    = $request->post('activity_id');
         $activity_model = ActivityModel::find($activity_id);
-        if ($activity_model) {
+        if ($activity_model->id) {
             $activity_model->activityImage()->save([
                 'image_id'      =>  $image_id,
                 'activity_id'   =>  $activity_model->id,
@@ -151,21 +167,22 @@ class Activity
             $result->_countdown = ($result->start_time - $now_time) >  0 ? ($result->start_time - $now_time) : 0;
             return ['res'=>0, 'data'=>$result];
         }
-        return ['res'=>-1, 'msg'=>'保存失败'];
+        throw new ActivityException();
     }
 
     /**
-     * 保存 用户聚会关联信息
+     * 保存 用户聚会关联信息 用户打开聚会页面就做关联
      *
      * @param Request $request
      * @return array
      */
     public function saveActivityUser(Request $request)
     {
-        $user_id = $request->post('user_id');
-        $activity_id = $request->post('activity_id');
+        (new ActivityUserSave())->goCheck();
+        $user_id        = $request->post('user_id');
+        $activity_id    = $request->post('activity_id');
         $resault = ActivityModel::hasWhere('info', ['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
-        if (!$resault) {
+        if (!$resault) {  // 未关联
             $activity_model = ActivityModel::find($activity_id);
             $activity_model->info()->save([
                 'user_id'       =>  $user_id,
@@ -176,21 +193,33 @@ class Activity
         return ['error'=>'0','data'=>'success'];
     }
 
-    public function saveComingInfo(Request $request)
+    /**
+     * 保存用户报名信息
+     *
+     * @param Request $request
+     * @return array
+     * @throws ActivityException
+     */
+    public function saveUserComing(Request $request)
     {
-        $user_id = $request->post('user_id');
+        (new UserComingSave())->goCheck();
+        $user_id     = $request->post('user_id');
         $activity_id = $request->post('activity_id');
-        $username = $request->post('username');
-        $phone = $request->post('phone');
-        if ($username == '' || $phone == '' || $user_id == '' || $activity_id == '') return ['res'=>-1, 'msg'=>'参数不能为空'];
+        $username    = $request->post('username');
+        $phone       = $request->post('phone');
         $user_model = UserModel::find($user_id);
-        $user_model->username = $username;
-        $user_model->phone = $phone;
-        $user_model->save();
-        $info_model = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->find();
-        $info_model->is_coming = 1;
-        $info_model->save();
-        return ['res'=>0, 'data'=>'保存成功'];
+        if ($user_model->id) { // 先更新用户信息
+            $user_model->username = $username;
+            $user_model->phone    = $phone;
+            $user_model->save();
+            $info_model = InfoModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->find();
+            if ($info_model->id) { // 再保存报名信息
+                $info_model->is_coming = 1;
+                $info_model->save();
+                return ['res'=>0, 'data'=>'保存成功'];
+            }
+        }
+        throw new ActivityException();
     }
 
     public function enCryptedData(Request $request)
