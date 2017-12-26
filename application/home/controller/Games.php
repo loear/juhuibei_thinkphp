@@ -16,4 +16,9 @@ class Games
         return view();
     }
 
+    public function dontDie()
+    {
+        return view();
+    }
+
 }

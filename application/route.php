@@ -88,6 +88,7 @@ Route::post('api/:version/token/info', 'api/:version.Token/saveUserInfo'); // �
 
 Route::group('play', function() { // 后台以amos开始
     Route::get('read_heart', 'home/Games/readHeart');
+    Route::get('dont_die', 'home/Games/dontDie');
 },['ext'=>'html']);
 
 Route::group('amos', function(){ // 后台以amos开始
