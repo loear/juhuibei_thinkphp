@@ -69,7 +69,7 @@ Route::get( // 获取用户信息
     ['id' => '\d+']
 );
 
-Route::get('api/:version/game/all', 'api/:version.Game/getAllGames');   // 获取所有游戏列表
+Route::get('api/:version/games', 'api/:version.Game/getGamesAll');   // 获取所有游戏列表
 
 Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');
 

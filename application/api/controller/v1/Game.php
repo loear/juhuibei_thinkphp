@@ -12,14 +12,14 @@ use app\lib\exception\GameException;
 
 class Game
 {
-    public function getAllGames()
+    public function getGamesAll()
     {
-        $games = GameModel::all([], ['img'=>function($query){$query->withField('id,url,type');}]);
+        $data = GameModel::all([], ['img'=>function($query){$query->withField('id,url,type');}]);
 
-        if ($games->isEmpty()) {
+        if ($data->isEmpty()) {
             throw new GameException();
         }
-        return $games;
+        return ['res'=>0, 'data'=>$data];
     }
 
 }
