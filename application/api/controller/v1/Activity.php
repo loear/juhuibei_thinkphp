@@ -16,6 +16,7 @@ use app\api\validate\UserComingSave;
 use app\common\model\Activity as ActivityModel;
 use app\common\model\Info as InfoModel;
 use app\common\model\User as UserModel;
+use app\common\model\ActivityImage as ActivityImageModel;
 use app\lib\encrypt\WXBizDataCrypt;
 use app\lib\exception\ActivityException;
 use app\lib\exception\ActivityMissException;
@@ -188,9 +189,12 @@ class Activity
                 'user_id'       =>  $user_id,
                 'activity_id'   =>  $activity_model->id,
             ]);
-            return ['error'=>'0','data'=>'success'];
         }
-        return ['error'=>'0','data'=>'success'];
+        $info_model = InfoModel::with(['userInfo'=>function($query){$query->withField('id,nickname,username,avatar_url,phone');}])
+            ->where(['user_id' => $user_id, 'activity_id' => $activity_id])
+            ->find();
+        $info_model->_picture_number = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+        return ['res'=>0, 'data'=>$info_model];
     }
 
     /**

@@ -11,9 +11,12 @@ namespace app\api\controller\v1;
 
 use app\api\service\UserToken;
 use app\api\validate\TokenGet;
+use app\api\validate\UserInfoSave;
+use app\lib\exception\ActivityException;
 use app\lib\exception\ParameterException;
 use app\api\service\Token as TokenService;
 use app\common\model\User as UserModel;
+use think\Request;
 
 class Token
 {
@@ -39,17 +42,19 @@ class Token
     }
 
 
-    public function saveUserInfo($data)
+    public function saveUserInfo(Request $request)
     {
-        if (!empty($data) && $data['user_id'] > 0) {
-            $model = UserModel::find($data['user_id']);
-            $model->nickname = $data['nickName'];
-            $model->avatar_url = $data['avatarUrl'];
+        (new UserInfoSave())->goCheck();
+        $user_id    = $request->post('user_id');
+        $nickname   = $request->post('nickname');
+        $avatar_url = $request->post('avatar_url');
+        $model = UserModel::find($user_id);
+        if ($model->id) {
+            $model->nickname    = $nickname;
+            $model->avatar_url  = $avatar_url;
             $model->save();
-            return ['status'=>'success'];
+            return ['res'=>0, 'data'=>$model->id];
         }
-        throw new ParameterException([
-           '参数错误'
-        ]);
+        throw new ActivityException();
     }
 }
