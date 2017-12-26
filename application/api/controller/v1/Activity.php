@@ -59,6 +59,7 @@ class Activity
             $activity_model->activityImage()->save([
                 'image_id'      =>  $data['image_id'],
                 'activity_id'   =>  $activity_model->id,
+                'user_id'       =>  $user_id,
                 'name'          =>  '聚会封面',
                 'description'   =>  '这张照片让我想起了...'
             ]);
@@ -166,6 +167,9 @@ class Activity
             $result->_start_time = date("Y-m-d H:i", $result->start_time);
             $now_time = time();
             $result->_countdown = ($result->start_time - $now_time) >  0 ? ($result->start_time - $now_time) : 0;
+            $info_model = InfoModel::where(['user_id' => $user_id, 'activity_id' => $activity_id])->find();
+            $info_model->_picture_number = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+            $result->_is_uploading  = ($info_model->picture_number - $info_model->_picture_number > 0) ? true : false;
             return ['res'=>0, 'data'=>$result];
         }
         throw new ActivityException();
@@ -194,6 +198,7 @@ class Activity
             ->where(['user_id' => $user_id, 'activity_id' => $activity_id])
             ->find();
         $info_model->_picture_number = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+        $info_model->_is_uploading  = ($info_model->picture_number - $info_model->_picture_number > 0) ? true : false;
         return ['res'=>0, 'data'=>$info_model];
     }
 

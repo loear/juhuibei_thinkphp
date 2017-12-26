@@ -86,6 +86,10 @@ Route::post('api/:version/token/user', 'api/:version.Token/getToken');      // �
 Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken'); // 验证TOKEN
 Route::post('api/:version/token/info', 'api/:version.Token/saveUserInfo'); // 验证TOKEN
 
+Route::group('play', function() { // 后台以amos开始
+    Route::get('read_heart', 'home/Games/readHeart');
+},['ext'=>'html']);
+
 Route::group('amos', function(){ // 后台以amos开始
     // 分类
     Route::group('category', [

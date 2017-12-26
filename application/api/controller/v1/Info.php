@@ -28,6 +28,7 @@ class Info
 
         if ($info_model) {
             $info_model->_picture_number = ActivityImageModel::where(['user_id'=>$user_id, 'activity_id'=>$activity_id])->count();
+            $info_model->_is_uploading  = ($info_model->picture_number - $info_model->_picture_number > 0) ? true : false;
             return ['res' => 0, 'data' => $info_model];
         }
         throw new InfoMissException();

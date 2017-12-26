@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title>读心小博士-聚会呗</title>
+    <link rel="stylesheet" href="/games/read_heart/style.css">
+    <script src="/games/read_heart/common.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js"></script>
+    <script>ISDSpeed.hit(1,true);</script>
+</head>
+<body>
+<div id="wrapper" class="wrapper">
+    <ul id="deck" class="deck">
+        <li class="card"></li>
+        <li class="card"></li>
+        <li class="card"></li>
+    </ul>
+</div>
+<div id="deck0" class="cover">
+    <div id="loader" class="loader ivalign">
+        <i class="spr spr-spirit"></i><i class="spr spr-shadow"></i>
+        <div class="loader-tip">
+            读心术准备中
+        </div>
+        <div id="progress" class="loader-progress">
+            0%
+        </div>
+    </div>
+    <div class="cover_ft">
+        <div class="spr spr-logo">
+        </div>
+    </div>
+</div>
+<div id="tip" class="tip hide">
+    <div class="tip_bg">
+    </div>
+    <div class="tip_bd ivalign">
+        <div id="tipTxt" class="tip_txt">
+            复制链接成功,快发给朋友们吧！
+        </div>
+        <div class="tip_acts">
+            <a id="btnCloseTip" class="btn btn-block btn-style2">知道了</a>
+        </div>
+    </div>
+</div>
+<div id="shareTip" class="sharetip hide">
+    <div class="spr spr-arr2">
+    </div>
+    <div class="sharetip_txt sharetip_txt1">
+        点击上面按钮
+    </div>
+    <div class="sharetip_txt">
+        再<span class="c_txt1">分享到朋友圈</span>
+    </div>
+</div>
+<div id="topTip" class="toptip ani-slideup">
+    <span class="toptip_txt1">只能往下翻哦！</span><span class="toptip_txt2">最后一页了哦！</span>
+</div>
+<script id="tplC2" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/2.jpg" alt="全民怪兽"/>
+            <div id="bubble" class="bubble">
+                <i class="spr spr-bubble"></i>
+            </div>
+            <div class="arr">开始读心<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC3" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/3.jpg" alt="全民怪兽"/>
+            <div id="poker1" class="poker poker1">
+                <i class="spr spr-card1"></i>
+            </div>
+            <div id="poker3" class="poker poker3">
+                <i class="spr spr-card3"></i>
+            </div>
+            <div class="arr">继续<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC4" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/4.jpg" alt="全民怪兽"/>
+            <div class="arr">继续<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC5" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/5.jpg" alt="全民怪兽"/>
+            <div class="arr">继续<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC6" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/6.jpg" alt="全民怪兽"/>
+            <div class="arr">继续<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC7" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/7.jpg" alt="全民怪兽"/>
+            <div id="poker2" class="poker poker2">
+                <i class="spr-card2"></i>
+            </div>
+            <div id="poker4" class="poker poker4">
+                <i class="spr-card4"></i>
+            </div>
+            <div class="arr">继续<div class="spr spr-arr"></div></div>
+        </div>
+    </script>
+<script id="tplC8" type="text/js-tpl">
+        <div class="card-bd ivalign">
+            <img src="/games/read_heart/images/8.jpg" alt="全民怪兽"/>
+            <div id="snsActions" class="sns-acts">
+                <a id="btnShare" class="btn btn-block btn_share">转发到朋友圈</a>
+                <a id="btnRetry" class="btn btn-block btn-style1">再试一次</a>
+                <!--<a id="btnCopy" href="javscript:void(0)" >关注我们</a>-->
+                <div class="sns-tip" onclick="wx.miniProgram.reLaunch({url: '/pages/home/index'})">返回聚会呗</div>
+            </div>
+        </div>
+  </script>
+<script>ISDSpeed.hit(0);</script>
+<script src="/games/read_heart/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded',function(e){
+        heroApp.init({
+            imgPrefix:'/games/read_heart/images/',
+            okTip:'复制链接成功,快发给朋友们吧！',
+            errTip:'浏览器不支持自动复制！长按下面链接可以手工复制哦！<br/><br/><a href="$">小黄鸭</a>'
+        });
+    });
+    ISDSpeed.hit(2);window.addEventListener('load',function(){ISDSpeed.hit(3,true).report();});
+</script>
+
+</body>
+</html>
