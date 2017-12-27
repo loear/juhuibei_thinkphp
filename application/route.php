@@ -11,6 +11,12 @@
 
 use think\Route;
 
+Route::get( // 获取聚会活动列表
+    'api/:version/test',
+    'api/:version.Activity/test'
+);
+
+
 Route::post( // 聚会活动提交
     'api/:version/activity_submit',
     'api/:version.Activity/saveActivity'

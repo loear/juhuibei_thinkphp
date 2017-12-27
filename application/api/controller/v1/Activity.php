@@ -8,12 +8,14 @@
 
 namespace app\api\controller\v1;
 
+use app\api\service\Template;
 use app\api\validate\ActivitySave;
 use app\api\validate\ActivityImageSave;
 use app\api\validate\ActivityUserSave;
 use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\UserComingSave;
 use app\common\model\Activity as ActivityModel;
+use app\common\model\ApiLog;
 use app\common\model\Info as InfoModel;
 use app\common\model\User as UserModel;
 use app\common\model\ActivityImage as ActivityImageModel;
@@ -24,6 +26,39 @@ use think\Request;
 
 class Activity
 {
+    private function createActivitySuccessNotice($form_id, $user_id, $activity_id, $title, $start_time, $address)
+    {
+        $template = new Template();
+        $access_token = $template->getAccessToken();
+        $template_id = config('wx.tid_activity_create');
+        $page = '/pages/activity-detail/index?user_id=' . $user_id . '&activity_id=' . $activity_id;
+        $user_model = UserModel::find($user_id);
+        $openid = $user_model->openid;
+        $data = [
+            'keyword1'  =>  ['value' =>  $title, 'color' => '#FF4444'],         // 活动名称
+            'keyword2'  =>  ['value' =>  data('Y年m月d日 H:i', $start_time)],    // 活动时间
+            'keyword3'  =>  ['value' =>  $address],                             // 活动地址
+        ];
+        return $template->sendTemplateMsg($access_token, $template_id, $page, $openid, $form_id, $data);
+    }
+
+    private function joinActiviySuccessNotice($form_id, $user_id, $activity_id)
+    {
+        $template = new Template();
+        $access_token = $template->getAccessToken();
+        $template_id = config('wx.tid_activity_join');
+        $page = '/pages/activity-detail/index?user_id=' . $user_id . '&activity_id=' . $activity_id;
+        $user_model = UserModel::find($user_id);
+        $openid = $user_model->openid;
+        $data = [
+            'keyword1'  =>  ['value' =>  $title, 'color' => '#FF4444'],         // 活动名称
+            'keyword2'  =>  ['value' =>  data('Y年m月d日 H:i', $start_time)],    // 活动时间
+            'keyword3'  =>  ['value' =>  $address],                             // 活动地址
+        ];
+        return $template->sendTemplateMsg($access_token, $template_id, $page, $openid, $form_id, $data);
+
+    }
+
     /**
      * 聚会活动提交
      *
@@ -37,17 +72,18 @@ class Activity
         $data = $request->post();
         $user_id = $data['user_id'];
         $activity_model = new ActivityModel();
-        $activity_model->title = $data['title'];
-        $activity_model->description = $data['description'];
-        $activity_model->start_time = strtotime($data['start_date'] . ' ' . $data['start_time']);
-        $activity_model->end_time = strtotime($data['end_date'] . ' ' . $data['end_time']);
-        $activity_model->gourmet_title = $data['gourmet_title'];
-        $activity_model->gourmet_address = $data['gourmet_address'];
-        $activity_model->latitude = $data['latitude'];
-        $activity_model->longitude = $data['longitude'];
+        $activity_model->title              = $data['title'];
+        $activity_model->description        = $data['description'];
+        $activity_model->start_time         = strtotime($data['start_date'] . ' ' . $data['start_time']);
+        $activity_model->end_time           = strtotime($data['end_date'] . ' ' . $data['end_time']);
+        $activity_model->gourmet_title      = $data['gourmet_title'];
+        $activity_model->gourmet_address    = $data['gourmet_address'];
+        $activity_model->latitude           = $data['latitude'];
+        $activity_model->longitude          = $data['longitude'];
         // $activity_model->is_only_group = $data['is_only_group'] ? '1' : '0';
-        $activity_model->numbers = $data['numbers'];
+        $activity_model->numbers            = $data['numbers'];
         $activity_model->save();
+        (new ApiLog())->recordLog('发送模板消息1', '10000', json_encode($activity_model->id));
         if ($activity_model->id) {
             $activity_model->info()->save([
                 'user_id'       =>  $user_id,
@@ -67,7 +103,9 @@ class Activity
             $user_model->username = $data['username'];
             $user_model->phone    = $data['phone'];
             $user_model->save();
+            $form_id = $data['form_id'];
             if ($user_model->id) {
+                    $this->createActivitySuccessNotice($form_id, $user_id, $activity_model->id, $data['title'], $activity_model->start_time, $data['gourmet_title']);
                 return ['res'=>0, 'data'=>'保存成功'];
             }
         }
