@@ -26,6 +26,17 @@ use think\Request;
 
 class Activity
 {
+    /**
+     * 创建活动成功通知
+     *
+     * @param $form_id
+     * @param $user_id
+     * @param $activity_id
+     * @param $title
+     * @param $start_time
+     * @param $address
+     * @return bool
+     */
     private function createActivitySuccessNotice($form_id, $user_id, $activity_id, $title, $start_time, $address)
     {
         $template = new Template();
@@ -36,24 +47,36 @@ class Activity
         $openid = $user_model->openid;
         $data = [
             'keyword1'  =>  ['value' =>  $title, 'color' => '#FF4444'],         // 活动名称
-            'keyword2'  =>  ['value' =>  data('Y年m月d日 H:i', $start_time)],    // 活动时间
+            'keyword2'  =>  ['value' =>  date('Y年m月d日 H:i', $start_time)],    // 活动时间
             'keyword3'  =>  ['value' =>  $address],                             // 活动地址
         ];
         return $template->sendTemplateMsg($access_token, $template_id, $page, $openid, $form_id, $data);
     }
 
+    /**
+     * 加入活动成功通知
+     *
+     * @param $form_id
+     * @param $user_id
+     * @param $activity_id
+     * @return bool
+     */
     private function joinActiviySuccessNotice($form_id, $user_id, $activity_id)
     {
         $template = new Template();
         $access_token = $template->getAccessToken();
         $template_id = config('wx.tid_activity_join');
         $page = '/pages/activity-detail/index?user_id=' . $user_id . '&activity_id=' . $activity_id;
-        $user_model = UserModel::find($user_id);
+        $activity_model = ActivityModel::find($activity_id);
+        $number         = InfoModel::where(['activity_id'=>$activity_id, 'is_coming'=>1])->count();
+        $user_model     = UserModel::find($user_id);
         $openid = $user_model->openid;
         $data = [
-            'keyword1'  =>  ['value' =>  $title, 'color' => '#FF4444'],         // 活动名称
-            'keyword2'  =>  ['value' =>  data('Y年m月d日 H:i', $start_time)],    // 活动时间
-            'keyword3'  =>  ['value' =>  $address],                             // 活动地址
+            'keyword1'  =>  ['value' =>  $activity_model->title, 'color' => '#FF4444'],       // 活动名称
+            'keyword2'  =>  ['value' =>  $user_model->update_time],                            // 报名时间
+            'keyword3'  =>  ['value' =>  $number . '人'],                                      // 报名人数
+            'keyword4'  =>  ['value' =>  $activity_model->gourmet_title],                     // 活动地点
+            'keyword5'  =>  ['value' =>  date('Y年m月d日 H:i', $activity_model->start_time)],  // 活动时间
         ];
         return $template->sendTemplateMsg($access_token, $template_id, $page, $openid, $form_id, $data);
 
@@ -263,6 +286,8 @@ class Activity
             if ($info_model->id) { // 再保存报名信息
                 $info_model->is_coming = 1;
                 $info_model->save();
+                $form_id = $request->post('form_id');
+                $this->joinActiviySuccessNotice($form_id, $user_id, $activity_id);
                 return ['res'=>0, 'data'=>'保存成功'];
             }
         }
