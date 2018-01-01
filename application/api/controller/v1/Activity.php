@@ -113,7 +113,7 @@ class Activity
                 'activity_id'   =>  $activity_model->id,
                 'is_master'     =>  1,  // 创建者身份
                 'is_coming'     =>  1,  // 创建者也是参与者
-                'picture_number'=>  2   // 创建者可以上传两张照片
+                'picture_number'=>  10  // 创建者可以上传10张照片
             ]);
             $activity_model->activityImage()->save([
                 'image_id'      =>  $data['image_id'],
@@ -253,6 +253,7 @@ class Activity
             $activity_model->info()->save([
                 'user_id'       =>  $user_id,
                 'activity_id'   =>  $activity_model->id,
+                'picture_number'=>  10  // 默认用户可上传10张照片
             ]);
         }
         $info_model = InfoModel::with(['userInfo'=>function($query){$query->withField('id,nickname,username,avatar_url,phone');}])
