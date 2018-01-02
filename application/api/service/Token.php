@@ -18,6 +18,11 @@ use think\Request;
 
 class Token
 {
+    /**
+     * 生成令牌
+     *
+     * @return string
+     */
     public static function generateToken()
     {
         // 32字符组成一组随机字符串
@@ -29,6 +34,54 @@ class Token
         $salt = config('secure.token_salt');
 
         return md5($randChars . $tempstamp . $salt);
+    }
+
+    // 验证token是否合法或者是否过期
+    // 验证器验证只是token验证的一种方式
+    // 另外一种方式是使用行为拦截token，根本不让非法token
+    // 进入控制器
+    public static function needPrimaryScope()
+    {
+        $scope = self::getCurrentTokenVar('scope');
+        if ($scope) {
+            if ($scope >= ScopeEnum::User) {
+                return true;
+            }
+            else{
+                throw new ForbiddenException();
+            }
+        } else {
+            throw new TokenException();
+        }
+    }
+
+    // 用户专有权限
+    public static function needExclusiveScope()
+    {
+        $scope = self::getCurrentTokenVar('scope');
+        if ($scope){
+            if ($scope == ScopeEnum::User) {
+                return true;
+            } else {
+                throw new ForbiddenException();
+            }
+        } else {
+            throw new TokenException();
+        }
+    }
+
+    public static function needSuperScope()
+    {
+        $scope = self::getCurrentTokenVar('scope');
+        if ($scope){
+            if ($scope == ScopeEnum::Super) {
+                return true;
+            } else {
+                throw new ForbiddenException();
+            }
+        } else {
+            throw new TokenException();
+        }
     }
 
     public static function getCurrentTokenVar($key)
@@ -50,43 +103,76 @@ class Token
         }
     }
 
+    /**
+     * 从缓存中获取当前用户指定身份标识
+     *
+     * @param array $keys
+     * @return array result
+     * @throws \app\lib\exception\TokenException
+     */
+    public static function getCurrentIdentity($keys)
+    {
+        $token = Request::instance()
+            ->header('token');
+        $identities = Cache::get($token);
+        //  cache 助手函数有bug
+        //  $identities = cache($token);
+        if (!$identities)
+        {
+            throw new TokenException();
+        }
+        else
+        {
+            $identities = json_decode($identities, true);
+            $result = [];
+            foreach ($keys as $key)
+            {
+                if (array_key_exists($key, $identities))
+                {
+                    $result[$key] = $identities[$key];
+                }
+            }
+            return $result;
+        }
+    }
+
+    /**
+     * 当需要获取全局UID时，应当调用此方法，而不应当自己解析UID
+     *
+     * @return mixed
+     */
     public static function getCurrentUid()
     {
         //token
         $uid = self::getCurrentTokenVar('uid');
-        return $uid;
-    }
-
-    // 用户和管理员都可以访问
-    public static function needPrimaryScope()
-    {
         $scope = self::getCurrentTokenVar('scope');
-        if ($scope) {
-            if ($scope >= ScopeEnum::User) {
-                return true;
-            } else {
-                throw new ForbiddenException();
+        if ($scope == ScopeEnum::Super)
+        {
+            // 只有Super权限才可以自己传入uid
+            // 且必须在get参数中，post不接受任何uid字段
+            $userID = input('get.uid');
+            if (!$userID)
+            {
+                throw new ParameterException(
+                    [
+                        'msg' => '没有指定需要操作的用户对象'
+                    ]);
             }
-        } else {
-            throw new TokenException();
+            return $userID;
+        }
+        else
+        {
+            return $uid;
         }
     }
 
-    // 只有用户可以访问
-    public static function needExclusiveScope()
-    {
-        $scope = self::getCurrentTokenVar('scope');
-        if ($scope) {
-            if ($scope == ScopeEnum::User) {
-                return true;
-            } else {
-                throw new ForbiddenException();
-            }
-        } else {
-            throw new TokenException();
-        }
-    }
-
+    /**
+     * 检查操作UID是否合法
+     *
+     * @param $checkedUID
+     * @return bool
+     * @throws Exception
+     */
     public static function isValidOperate($checkedUID)
     {
         if (!$checkedUID) {
@@ -99,6 +185,12 @@ class Token
         return false;
     }
 
+    /**
+     * 验证TOKEN
+     *
+     * @param $token
+     * @return bool
+     */
     public static function verifyToken($token)
     {
         $exist = Cache::get($token);
@@ -109,6 +201,5 @@ class Token
             return false;
         }
     }
-
 
 }
