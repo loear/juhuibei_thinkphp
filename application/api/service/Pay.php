@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by 七月.
- * Author: 七月
- * 微信公号：小楼昨夜又秋风
- * 知乎ID: 七月在夏天
- * Date: 2017/2/26
- * Time: 16:02
- */
 
 namespace app\api\service;
 
@@ -24,7 +16,7 @@ Loader::import('WxPay.WxPay', EXTEND_PATH, '.Api.php');
 
 class Pay
 {
-    private $orderNo;
+    private $orderSn;
     private $orderID;
 //    private $orderModel;
 
@@ -47,7 +39,6 @@ class Pay
             return $status;
         }
         return $this->makeWxPreOrder($status['orderPrice']);
-        //        $this->checkProductStock();
     }
 
     // 构建微信支付订单信息
@@ -137,7 +128,7 @@ class Pay
                 'code' => 400
             ]);
         }
-        $this->orderNo = $order->order_no;
+        $this->orderSn = $order->order_sn;
         return true;
     }
 }
