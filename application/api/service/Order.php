@@ -65,7 +65,7 @@ class Order
     }
 
     /**
-     * @param string $orderNo 订单号
+     * @param string $orderSn 订单号
      * @return array 订单商品状态
      * @throws Exception
      */
@@ -199,10 +199,10 @@ class Order
     private function createOrderByTrans($snap)
     {
         try {
-            $orderNo = $this->makeOrderNo();
+            $orderSn = $this->makeOrderSn();
             $order = new OrderModel();
             $order->user_id = $this->uid;
-            $order->order_no = $orderNo;
+            $order->order_sn = $orderSn;
             $order->total_price = $snap['orderPrice'];
             $order->total_count = $snap['totalCount'];
             $order->snap_img = $snap['snapImg'];
@@ -220,7 +220,7 @@ class Order
             $orderProduct = new OrderProduct();
             $orderProduct->saveAll($this->oProducts);
             return [
-                'order_no' => $orderNo,
+                'order_sn' => $orderSn,
                 'order_id' => $orderID,
                 'create_time' => $create_time
             ];
@@ -281,7 +281,7 @@ class Order
         return $pStatus;
     }
 
-    public static function makeOrderNo()
+    public static function makeOrderSn()
     {
         $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J');
         $orderSn =

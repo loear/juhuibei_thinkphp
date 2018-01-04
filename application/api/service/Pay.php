@@ -51,7 +51,7 @@ class Pay
             throw new TokenException();
         }
         $wxOrderData = new \WxPayUnifiedOrder();
-        $wxOrderData->SetOut_trade_no($this->orderNo);
+        $wxOrderData->SetOut_trade_no($this->orderSn);
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
         $wxOrderData->SetBody('聚会呗');
@@ -61,12 +61,12 @@ class Pay
         return $this->getPaySignature($wxOrderData);
     }
 
-    //向微信请求订单号并生成签名
+    // 向微信请求订单号并生成签名
     private function getPaySignature($wxOrderData)
     {
         $wxOrder = \WxPayApi::unifiedOrder($wxOrderData);
         // 失败时不会返回result_code
-        if($wxOrder['return_code'] != 'SUCCESS' || $wxOrder['result_code'] !='SUCCESS'){
+        if ($wxOrder['return_code'] != 'SUCCESS' || $wxOrder['result_code'] != 'SUCCESS') {
             Log::record($wxOrder,'error');
             Log::record('获取预支付订单失败','error');
 //            throw new Exception('获取预支付订单失败');
