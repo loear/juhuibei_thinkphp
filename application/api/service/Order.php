@@ -182,6 +182,7 @@ class Order
 
     private function getUserAddress()
     {
+        return ['地址'];
         $userAddress = UserAddress::where('user_id', '=', $this->uid)
             ->find();
         if (!$userAddress) {

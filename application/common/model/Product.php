@@ -11,7 +11,7 @@ namespace app\common\model;
 
 class Product extends BaseModel
 {
-    protected $hidden = ['img_id', 'from', 'category_id', 'create_time', 'update_time', 'delete_time'];
+    protected $hidden = ['img_id', 'category_id', 'create_time', 'update_time', 'delete_time'];
 
     /**
      * 图片属性
