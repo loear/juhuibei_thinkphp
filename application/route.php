@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 
 use think\Route;
+Route::get('api/:version/test','api/:version.Info/test');
 
 Route::post( // 聚会活动提交
     'api/:version/activity_submit',
