@@ -12,6 +12,7 @@
 use think\Route;
 Route::get('api/:version/test','api/:version.Info/test');
 Route::get('api/:version/insert/:id','api/:version.Theme/insertById', ['id' => '\d+']);
+Route::get('api/:version/bat','api/:version.Theme/bat');
 
 Route::post( // 聚会活动提交
     'api/:version/activity_submit',

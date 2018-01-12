@@ -13,8 +13,7 @@ class Tag extends BaseModel
 {
     public function saveData($name)
     {
-        $this->name = $name;
-        $this->save();
+        $this->data(['name'=>$name])->isUpdate(false)->save();
         return $this->id;
     }
 

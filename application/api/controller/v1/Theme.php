@@ -14,6 +14,8 @@ use app\common\model\Theme as ThemeModel;
 use app\common\model\Module as ModuleModel;
 use app\common\model\Tag as TagModel;
 use app\common\model\ThemeModule as ThemeModuleModel;
+use app\common\model\ModuleTag as ModuleTagModel;
+use app\common\model\Template as TemplateModel;
 
 class Theme
 {
@@ -54,10 +56,22 @@ class Theme
         $module_model = new ModuleModel();
         $tag_model = new TagModel();
         $tm_model = new ThemeModuleModel();
+        $tpl_model = new TemplateModel();
+        $mt_model = new ModuleTagModel();
 
         foreach ($data['module_data'] as $k=>$v)
         {
-            $module_id = $module_model->saveData($v, $data['module_tpl']);
+            $tpl_model->data([
+                'name'  =>  $v['tpl_name'],
+                'mark_name'  =>  $v['tpl_mark_name'],
+                'html'  =>  $data['module_tpl'][$v['tpl_mark_name']]['html'],
+                'css'  =>  $data['module_tpl'][$v['tpl_mark_name']]['css']
+            ])->isUpdate(false)->save();
+            $module_model->data([
+                'name'=>$v['tpl_mark_name'],
+                'tpl_id'=>$tpl_model->id
+            ])->isUpdate(false)->save();
+            $module_id = $module_model->id;
             /*$data_tm = [
                 'theme_id'  =>  $id,
                 'module_id' =>  $module_id,
@@ -65,29 +79,43 @@ class Theme
                 'deletable' =>  (int) $v['deletable']
             ];
             $theme_model->themeModule()->save($data_tm);*/
-            $tm_model->theme_id = $id;
+            /*$tm_model->theme_id = $id;
             $tm_model->module_id = $module_id;
             $tm_model->index = $k;
-            $tm_model->deletable = (int) $v['deletable'];
-            $tm_model->save();
+            $tm_model->deletable = (int) $v['deletable'];*/
+
+            $tm_model->data([
+                'theme_id'  =>  $id,
+                'module_id' =>  $module_id,
+                'index'     =>  $k,
+                'deletable' =>  (int) $v['deletable']
+            ])->isUpdate(false)->save();
+
             foreach ($v[$v['tpl_mark_name']] as $k2=>$v2) {
-                $tag_id = $tag_model->saveData($k2);
-                if ($tag_id) {
-                    $data_mt = [
-                        'module_id' =>  $module_id,
-                        'tag_id'    =>  $tag_id,
-                        'index'     =>  $k2,
-                        'value'     =>  $v2['value'],
-                        'default_color' =>  $v2['default_color'],
-                        'font_color'    =>  isset($v2['font_color']) ? $v2['font_color'] : '',
-                        'attr_name'     =>  isset($v2['attr_name']) ? $v2['attr_name'] : '',
-                    ];
-                $tag_model->moduleTag()->save($data_mt);
-                }
+                $tag_model->data(['name'=>$k2])->isUpdate(false)->save();
+                $mt_model->data([
+                    'module_id' =>  $module_id,
+                    'tag_id'    =>  $tag_model->id,
+                    'index'     =>  $k2,
+                    'value'     =>  $v2['value'],
+                    'default_color' =>  $v2['default_color'],
+                    'font_color'    =>  isset($v2['font_color']) ? $v2['font_color'] : '',
+                    'attr_name'     =>  isset($v2['attr_name']) ? $v2['attr_name'] : '',
+                ])->isUpdate(false)->save();
             }
         }
         // dump($data);
 
+    }
+
+    public function bat()
+    {
+        set_time_limit(0);
+        for ( $i = 74; $i <= 97; ++$i) {
+            if ($i == 37 || $i == 73) continue;
+            $this->insertById($i);
+            echo $i . '<br>';
+        }
     }
 
 }
