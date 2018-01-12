@@ -18,13 +18,7 @@ class Template extends BaseModel
         'update_time',
         'create_time'
     ];
-    protected $autoWriteTimestamp = true;
 
     use SoftDelete;
-
-    public function img()
-    {
-        return $this->belongsTo('Image', 'image_id', 'id');
-    }
 
 }

@@ -120,6 +120,9 @@ class Info
             'success'   =>  true
         ];
 
+        $url = 'https://www.pica.im/card/api/card_info?theme_id=' . 96;
+        $result_json = httpRequest($url);
+        $result = json_decode($result_json, true);
 
         return $result;
     }
