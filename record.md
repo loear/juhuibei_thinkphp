@@ -20,3 +20,18 @@ FLUSH PRIVILEGES;
 | 10006  | 无法获取上传的文件 |
 | 10007  | 该不能被修改，id错误或是不可被修改的目录 |
 | 10008  | 错误的请求方式 |  
+
+
+TRUNCATE ng_card;
+TRUNCATE ng_config;
+TRUNCATE ng_module;
+TRUNCATE ng_module_tag;
+TRUNCATE ng_music;
+TRUNCATE ng_tag;
+TRUNCATE ng_template;
+TRUNCATE ng_theme;
+TRUNCATE ng_theme_module;
+
+37
+
+73
