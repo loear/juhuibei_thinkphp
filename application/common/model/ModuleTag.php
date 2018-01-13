@@ -11,5 +11,6 @@ namespace app\common\model;
 
 class ModuleTag extends BaseModel
 {
+    protected $hidden = ['id', 'create_time', 'delete_time', 'update_time'];
 
 }

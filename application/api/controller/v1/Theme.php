@@ -51,8 +51,6 @@ class Theme
                 $card_model->save();
             }
         }
-
-        $theme_model = new ThemeModel();
         $module_model = new ModuleModel();
         $tag_model = new TagModel();
         $tm_model = new ThemeModuleModel();
@@ -72,18 +70,6 @@ class Theme
                 'tpl_id'=>$tpl_model->id
             ])->isUpdate(false)->save();
             $module_id = $module_model->id;
-            /*$data_tm = [
-                'theme_id'  =>  $id,
-                'module_id' =>  $module_id,
-                'index'     =>  $k,
-                'deletable' =>  (int) $v['deletable']
-            ];
-            $theme_model->themeModule()->save($data_tm);*/
-            /*$tm_model->theme_id = $id;
-            $tm_model->module_id = $module_id;
-            $tm_model->index = $k;
-            $tm_model->deletable = (int) $v['deletable'];*/
-
             $tm_model->data([
                 'theme_id'  =>  $id,
                 'module_id' =>  $module_id,
@@ -104,8 +90,6 @@ class Theme
                 ])->isUpdate(false)->save();
             }
         }
-        // dump($data);
-
     }
 
     public function bat()

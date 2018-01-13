@@ -11,6 +11,8 @@ namespace app\common\model;
 
 class ThemeModule extends BaseModel
 {
+    protected $hidden = ['id', 'create_time', 'delete_time', 'update_time'];
+
     public function module()
     {
         return $this->belongsTo('Module', 'module_id', 'id');

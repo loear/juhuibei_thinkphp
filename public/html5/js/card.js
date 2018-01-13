@@ -174,7 +174,7 @@
                     i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + "!/sq/150)"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
                     var n = location.search.match(/from_bless\=(\d)/);
                     i.skip_to_bless = n ? Number(n[1]) : 1, i.has_wx_auth = !! t.wx_info, i.has_wx_auth || !T && !E || $("body").addClass("no-wx-auth");
-                    var s = "/api/v1/test";
+                    var s = "/api/v1/card/1";
                     window.localStorage && "available" == window.localStorage.getItem("webpa") && (this.webp_usable = !0);
                     var o = {
                         /*user_id: t.user_id,
@@ -3755,6 +3755,7 @@
         };
         var _ = c.helpers = y.$helpers;
         c.onerror = function(t) {
+            console.log(t);
             var e = "Template Error\n\n";
             for (var i in t) e += "<" + i + ">\n" + t[i] + "\n\n";
             "object" == ("undefined" == typeof console ? "undefined" : (0, l.

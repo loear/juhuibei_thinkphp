@@ -11,6 +11,8 @@ namespace app\common\model;
 
 class Module extends BaseModel
 {
+    protected $hidden = ['create_time', 'delete_time', 'update_time'];
+
     public function saveData($data, $tpl)
     {
 
@@ -21,9 +23,14 @@ class Module extends BaseModel
 //        }
     }
 
-    private function muduleTpl()
+    public function template()
     {
         return $this->hasOne('Template', 'id', 'tpl_id');
+    }
+
+    public function moduleTag()
+    {
+        return $this->hasMany('moduleTag', 'module_id', 'id');
     }
 
 }

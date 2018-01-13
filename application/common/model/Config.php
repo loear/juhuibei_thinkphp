@@ -11,6 +11,8 @@ namespace app\common\model;
 
 class Config extends BaseModel
 {
+    protected $hidden = ['id', 'create_time', 'delete_time', 'update_time'];
+
     public function saveData($config)
     {
         $this->auto_play    = (int) $config['auto_play'];
@@ -19,5 +21,10 @@ class Config extends BaseModel
         $this->un_recommend = (int) $config['un_recommend'];
         $this->un_search    = (int) $config['un_search'];
         $this->save();
+    }
+
+    public function speed()
+    {
+        return $this->hasOne('Speed', 'id', 'speed_id');
     }
 }
