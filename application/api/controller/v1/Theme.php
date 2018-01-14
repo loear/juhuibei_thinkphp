@@ -94,12 +94,18 @@ class Theme
 
     public function bat()
     {
-        set_time_limit(0);
-        for ( $i = 74; $i <= 97; ++$i) {
+         set_time_limit(0);
+        /*for ( $i = 74; $i <= 97; ++$i) {
             if ($i == 37 || $i == 73) continue;
             $this->insertById($i);
             echo $i . '<br>';
-        }
+        }*/
+        /*$theme_model = new ThemeModel();
+        for ($i = 1; $i <= 97; ++$i) {
+            $theme_model->data([
+                'name' => '主题' . $i
+            ])->isUpdate(false)->save();
+        }*/
     }
 
 }

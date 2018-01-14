@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <!-- 禁止把数字转化为拨号链接 -->
+    <meta name="format-detection" content="telephone=no" />
+    <!-- 删除默认的苹果工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <meta name="viewport"
+          content="initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no">
+    <!-- DNS预获取 -->
+    <link rel="dns-prefetch" href="https://hm.baidu.com/">
+    <link rel="dns-prefetch" href="https://cdn.staticfile.org/">
+    <link rel="dns-prefetch" href="https://oh6qforah.qnssl.com/">
+    <link rel="dns-prefetch" href="https://mt-card.b0.upaiyun.com/">
+    <title>测试</title>
+    <meta name="keywords" content="关键词">
+    <meta name="description" content="描述">
+    <style id="dpAdapt"></style>
+    <link rel="stylesheet" href="/card/css/card.css">
+    <script src="/card/js/viewport.js"></script>
+    <style type="text/css" title="cardStyleSheet"></style>
+</head>
+<body>
+<div id="page-loading"></div>
+<div id="layout-mask" class="theme-style"></div>
+<div class="canvas-wrapper loading-style">
+    <p class="couples-image" id="loading-cover"></p>
+    <canvas id="loadingCanvas" style="background: transparent"></canvas>
+</div>
+<div id="bg_music" class="music-style" title="播放按钮">
+    <i class="iconfont music-icon">&#xe6ee;</i>
+</div>
+<a href="javascript:;" id="menuBtn" class="menu-btn no">
+    <span class="menu-item"></span>
+    <span class="menu-item"></span>
+    <span class="menu-item"></span>
+</a>
+
+<div id="card-wrapper" class="H5FullscreenPage-wrap theme-style">
+
+</div>
+
+<audio preload="" id="bgAudio" loop="loop"></audio>
+<audio preload="" id="blessAudio"></audio>
+
+<input type="hidden" id="config"
+       data-wx-config='{"appId": "","sign": "","timestamp":"","nonceStr": ""}'
+       data-site-config='{{$site_config}}'
+       data-global-css='{{$global_css}}'
+>
+<script>
+    var siteConfig = { host: 'http://www.juhuibei.com', debug:false, };
+    if (window.location.protocol== "https:" && siteConfig.host.substring(0,5)=='http:') {
+        siteConfig.host = siteConfig.host.replace('http','https')
+    }
+</script>
+<script src="/card/js/zepto.min.js"></script>
+<script src="/card/js/card.js"></script>
+
+</body>
+</html>

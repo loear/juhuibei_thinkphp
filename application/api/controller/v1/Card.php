@@ -45,6 +45,7 @@ class Card
             ->where('t.id', $card_model->theme_id)
             ->select()->toArray();
 
+        $module_tpl = [];
         foreach ($module_data as $k=>$v) {
            $result = Db::table('__MODULE_TAG__')
                 ->field('mt.value,mt.default_color,mt.font_color,mt.attr_name,mt.tag_id,t.name as tag_name')
