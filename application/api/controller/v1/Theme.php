@@ -16,6 +16,7 @@ use app\common\model\Tag as TagModel;
 use app\common\model\ThemeModule as ThemeModuleModel;
 use app\common\model\ModuleTag as ModuleTagModel;
 use app\common\model\Template as TemplateModel;
+use think\Db;
 
 class Theme
 {
@@ -106,6 +107,36 @@ class Theme
                 'name' => '主题' . $i
             ])->isUpdate(false)->save();
         }*/
+
+        /*for ($i = 1; $i <= 95; ++$i) {
+            $card_model = CardModel::find($i);
+            $module_data = Db::table('__THEME__')
+                ->field('tm.module_id,tm.index,tm.deletable,m.name as tpl_mark_name,tpl.name as tpl_name,tpl.id as tpl_id')
+                ->alias('t')
+                ->join('__THEME_MODULE__ tm', 't.id = tm.theme_id')
+                ->join('__MODULE__ m', 'tm.module_id = m.id')
+                ->join('__TEMPLATE__ tpl', 'tpl.id = m.tpl_id')
+                ->where('t.id', $card_model->theme_id)
+                ->select()->toArray();
+
+            foreach ($module_data as $k=>$v) {
+                $result = Db::table('__MODULE_TAG__')
+                    ->field('mt.value,mt.default_color,mt.font_color,mt.attr_name,mt.tag_id,t.name as tag_name')
+                    ->alias('mt')
+                    ->join('__TAG__ t', 't.id = mt.tag_id')
+                    ->where('mt.module_id', $v['module_id'])
+                    ->select();
+                foreach ($result as $v2) {
+                    $module_data[$k][$v['tpl_mark_name']][$v2['tag_name']] = $v2;
+                }
+            }
+            $card_model->module_data = json_encode($module_data);
+            $card_model->save();
+            echo $i;
+        }*/
+
+        echo "success";
+
     }
 
 }

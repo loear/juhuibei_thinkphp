@@ -24,7 +24,7 @@ class Card extends Controller
             'card_id'   =>  $id,
 //            'user_id'   =>  $card_model->user_id,
             'user_id'   =>  0,
-            'cover'     =>  $card_model->theme->cover
+            'cover'     =>  $card_model->cover
         ];
         $site_config = json_encode($site_config_arr);
         $this->assign(compact('global_css', 'site_config'));
