@@ -11,9 +11,16 @@ namespace app\home\controller;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\Card as CardModel;
 use think\Controller;
+use think\Request;
 
 class Card extends Controller
 {
+    /**
+     * 展示邀请卡
+     *
+     * @param $id
+     * @return \think\response\View
+     */
     public function index($id)
     {
         (new IDMustBePostiveInt())->goCheck();
@@ -29,6 +36,16 @@ class Card extends Controller
         $site_config = json_encode($site_config_arr);
         $this->assign(compact('global_css', 'site_config'));
         return view();
+    }
+
+    /**
+     *
+     */
+    public function sendBless(Request $request)
+    {
+        $data = $request->post();
+
+
     }
 
 }
