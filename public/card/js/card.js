@@ -750,7 +750,7 @@
         }, L.getData = function() {
             if (!this.is_loading) {
                 if (!this.has_data) return this.repeatScroll(), !1;
-                this.is_loading = !0, this.stop_scroll || this.stopAutoScroll(), $.getJSON("/card/api/wedding/bless/" + this.card_id, {
+                this.is_loading = !0, this.stop_scroll || this.stopAutoScroll(), $.getJSON("/api/v1/bless/" + this.card_id, {
                     page: this.page,
                     is_preview: Number(this.is_preview)
                 }, function(t) {

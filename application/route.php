@@ -21,7 +21,6 @@ Route::get('card/:id', 'api/home/Card/index', ['id' => '\d+']);
 //    Route::get('api/:version/theme_module/:id','api/:version.Theme/getThemeModule', [], ['id'=>'\d+']);
 //
 Route::group('api/:version', [
-    '/theme_module/:id'    => ['api/:version.Theme/getThemeModule',      ['method' => 'get'], ['id' => '\d+']],   // 获取主题页面
     '/activity_submit'     => ['api/:version.Activity/saveActivity',     ['method' => 'post']],                   // 聚会活动提交
     '/activity_list/:id'   => ['api/:version.Activity/getActivityList',  ['method' => 'get'], ['id' => '\d+']],   // 获取聚会活动列表
     '/activity_info/:id'   => ['api/:version.Activity/getActivityInfo',  ['method' => 'get'], ['id' => '\d+']],   // 获取聚会活动详情
@@ -44,6 +43,8 @@ Route::group('api/:version', [
     '/token/info'          => ['api/:version.Token/saveUserInfo',         ['method' => 'post']],                   // 保存用户信息
     '/order'               => ['api/:version.Order/placeOrder',           ['method' => 'post']],                   // 下单
     '/order/:id'           => ['api/:version.Order/getDetail',            ['method' => 'get'], ['id' => '\d+']],   // 获取订单详情
+    '/theme_module/:id'    => ['api/:version.Theme/getThemeModule',       ['method' => 'get'], ['id' => '\d+']],   // 获取主题页面
+    '/bless/:id'           => ['api/:version.Bless/getBlessByCardId',     ['method' => 'get'], ['id' => '\d+']],   // 获取祝福列表
 ]);
 
 
