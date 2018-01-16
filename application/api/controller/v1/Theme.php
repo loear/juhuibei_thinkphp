@@ -7,6 +7,7 @@
  */
 
 namespace app\api\controller\v1;
+use app\api\validate\IDMustBePostiveInt;
 use app\common\model\Card as CardModel;
 use app\common\model\Music as MusicModel;
 use app\common\model\Config as ConfigModel;
@@ -16,6 +17,7 @@ use app\common\model\Tag as TagModel;
 use app\common\model\ThemeModule as ThemeModuleModel;
 use app\common\model\ModuleTag as ModuleTagModel;
 use app\common\model\Template as TemplateModel;
+use app\lib\exception\ThemeMissException;
 use think\Db;
 
 class Theme
@@ -137,6 +139,17 @@ class Theme
 
         echo "success";
 
+    }
+
+    public function getThemeModule($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $theme_model = ThemeModel::with('themeModule.module')->find($id);
+        if ($theme_model) {
+            unset($theme_model->global_css);
+            return ['res'=>0, 'data'=>$theme_model];
+        }
+        throw new ThemeMissException();
     }
 
 }

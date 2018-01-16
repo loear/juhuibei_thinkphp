@@ -17,66 +17,35 @@ Route::get('api/:version/card/:id','api/:version.Card/getCardById', ['id' => '\d
 
 Route::get('card/:id', 'api/home/Card/index', ['id' => '\d+']);
 
-Route::post( // 聚会活动提交
-    'api/:version/activity_submit',
-    'api/:version.Activity/saveActivity'
-);
-Route::get( // 获取聚会活动列表
-    'api/:version/activity_list/:id',
-    'api/:version.Activity/getActivityList',
-    ['id' => '\d+']
-);
-Route::get( // 获取聚会活动详情
-    'api/:version/activity_info/:id',
-    'api/:version.Activity/getActivityInfo',
-    ['id' => '\d+']
-);
-Route::post( // 保存 用户关联聚会
-    'api/:version/save_activity_user',
-    'api/:version.Activity/saveActivityUser'
-);
-Route::post( // 解密
-    'api/:version/activity/encrypt',
-    'api/:version.Activity/enCryptedData'
-);
-Route::get( // 聚会信息
-    'api/:version/info/:user_id/:activity_id',
-    'api/:version.Info/getUserActivityInfo',
-    ['user_id' => '\d+', 'activity_id' => '\d+']
-);
-Route::get( // 照片信息
-    'api/:version/picture/:id',
-    'api/:version.Picture/getImageInfo',
-    ['id' => '\d+']
-);
-Route::post( // 保存照片名
-    'api/:version/save_picture_name',
-    'api/:version.Picture/saveImageName'
-);
-Route::get( // 获取七牛上传TOKEN
-    'api/:version/upload_token',
-    'api/:version.Activity/getUploadToken'
-);
-Route::post( // 保存上传至七牛图片
-    'api/:version/save_image',
-    'api/:version.Picture/saveQiniuImage'
-);
-Route::post( // 保存聚会图片关联信息
-    'api/:version/save_activity_image',
-    'api/:version.Activity/saveActivityImage'
-);
-Route::post( // 保存参加聚会人员信息
-    'api/:version/save_coming',
-    'api/:version.Activity/saveUserComing'
-);
-Route::get( // 获取用户信息
-    'api/:version/user_info/:id',
-    'api/:version.User/getUserInfo',
-    ['id' => '\d+']
-);
 
-Route::post('api/:version/order', 'api/:version.Order/placeOrder');                     // 下单
-Route::get('api/:version/order/:id', 'api/:version.Order/getDetail', [], ['id'=>'\d+']); // 获取订单详情
+//    Route::get('api/:version/theme_module/:id','api/:version.Theme/getThemeModule', [], ['id'=>'\d+']);
+//
+Route::group('api/:version', [
+    '/theme_module/:id'    => ['api/:version.Theme/getThemeModule',      ['method' => 'get'], ['id' => '\d+']],   // 获取主题页面
+    '/activity_submit'     => ['api/:version.Activity/saveActivity',     ['method' => 'post']],                   // 聚会活动提交
+    '/activity_list/:id'   => ['api/:version.Activity/getActivityList',  ['method' => 'get'], ['id' => '\d+']],   // 获取聚会活动列表
+    '/activity_info/:id'   => ['api/:version.Activity/getActivityInfo',  ['method' => 'get'], ['id' => '\d+']],   // 获取聚会活动详情
+    '/save_activity_user'  => ['api/:version.Activity/saveActivityUser', ['method' => 'post']],                   // 保存 用户关联聚会
+    '/info/:user_id/:activity_id'=> [
+        'api/:version.Info/getUserActivityInfo',
+        ['method' => 'get'],
+        ['user_id' => '\d+', 'activity_id' => '\d+']
+    ],   // 聚会信息
+    '/picture/:id'         => ['api/:version.Picture/getImageInfo',       ['method' => 'get'], ['id' => '\d+']],   // 照片信息
+    '/save_picture_name'   => ['api/:version.Picture/saveImageName',      ['method' => 'post']],                   // 保存照片名
+    '/upload_token'        => ['api/:version.Activity/getUploadToken',    ['method' => 'get']],                    // 获取七牛上传TOKEN
+    '/save_image'          => ['api/:version.Picture/saveQiniuImage',     ['method' => 'post']],                   // 保存上传至七牛图片
+    '/save_activity_image' => ['api/:version.Activity/saveActivityImage', ['method' => 'post']],                   // 保存聚会图片关联信息
+    '/save_coming'         => ['api/:version.Activity/saveUserComing',    ['method' => 'post']],                   // 保存参加聚会人员信息
+    '/user_info/:id'       => ['api/:version.User/getUserInfo',           ['method' => 'get'], ['id' => '\d+']],   // 获取用户信息
+    '/games'               => ['api/:version.Game/getGamesAll',           ['method' => 'get']],                    // 获取所有游戏列表
+    '/token/user'          => ['api/:version.Token/getToken',             ['method' => 'post']],                   // 获取TOKEN
+    '/token/verify'        => ['api/:version.Token/verifyToken',          ['method' => 'post']],                   // 验证TOKEN
+    '/token/info'          => ['api/:version.Token/saveUserInfo',         ['method' => 'post']],                   // 保存用户信息
+    '/order'               => ['api/:version.Order/placeOrder',           ['method' => 'post']],                   // 下单
+    '/order/:id'           => ['api/:version.Order/getDetail',            ['method' => 'get'], ['id' => '\d+']],   // 获取订单详情
+]);
+
 
 Route::get('api/:version/order/by_user', 'api/:version.Order/getSummaryByUser');            // 用户id分页获取订单列表
 Route::get('api/:version/order/paginate', 'api/:version.Order/getSummary');                 // 获取全部订单简要信息
@@ -85,23 +54,6 @@ Route::post('api/:version/pay/pre_order',   'api/:version.Pay/getPreOrder');
 Route::post('api/:version/pay/notify',      'api/:version.Pay/receiveNotify');
 Route::post('api/:version/pay/re_notify',   'api/:version.Pay/redirectNotify');
 Route::post('api/:version/pay/concurrency', 'api/:version.Pay/notifyConcurrency');
-
-Route::get('api/:version/games', 'api/:version.Game/getGamesAll');   // 获取所有游戏列表
-
-Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');
-
-Route::get('api/:version/category/all', 'api/:version.Category/getAllCategories');
-
-Route::post('api/:version/invitation/submit', 'api/:version.Invitation/postInvitation');
-
-Route::get('api/:version/article/:id', 'api/:version.Article/getArticle');
-
-Route::get('api/:version/template/all', 'api/:version.Template/getAllTemplates');
-
-Route::post('api/:version/token/user', 'api/:version.Token/getToken');      // 获取TOKEN
-
-Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken'); // 验证TOKEN
-Route::post('api/:version/token/info', 'api/:version.Token/saveUserInfo'); // 验证TOKEN
 
 Route::group('play', function() { // 后台以amos开始
     Route::get('read_heart', 'home/Games/readHeart');
