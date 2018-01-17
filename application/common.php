@@ -140,3 +140,13 @@ function httpRequest($url, $method="GET", $postfields = null, $headers = array()
     return $response;
     //return array($http_code, $response,$requestinfo);
 }
+
+function getImageInfo($url)
+{
+    $data = getimagesize($url);
+    return [
+        'url'   =>  $url,
+        'width' =>  $data[0],
+        'height'=>  $data[1]
+    ];
+}

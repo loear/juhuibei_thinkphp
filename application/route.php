@@ -13,13 +13,10 @@ use think\Route;
 Route::get('api/:version/test','api/:version.Info/test');
 Route::get('api/:version/insert/:id','api/:version.Theme/insertById', ['id' => '\d+']);
 Route::get('api/:version/bat','api/:version.Theme/bat');
-Route::get('api/:version/card/:id','api/:version.Card/getCardById', ['id' => '\d+']);
+
 
 Route::get('card/:id', 'api/home/Card/index', ['id' => '\d+']);
 
-
-//    Route::get('api/:version/theme_module/:id','api/:version.Theme/getThemeModule', [], ['id'=>'\d+']);
-//
 Route::group('api/:version', [
     '/activity_submit'     => ['api/:version.Activity/saveActivity',     ['method' => 'post']],                   // 聚会活动提交
     '/activity_list/:id'   => ['api/:version.Activity/getActivityList',  ['method' => 'get'], ['id' => '\d+']],   // 获取聚会活动列表
@@ -45,6 +42,9 @@ Route::group('api/:version', [
     '/order/:id'           => ['api/:version.Order/getDetail',            ['method' => 'get'], ['id' => '\d+']],   // 获取订单详情
     '/theme_module/:id'    => ['api/:version.Theme/getThemeModule',       ['method' => 'get'], ['id' => '\d+']],   // 获取主题页面
     '/bless/:id'           => ['api/:version.Bless/getBlessByCardId',     ['method' => 'get'], ['id' => '\d+']],   // 获取祝福列表
+    '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
+    '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
+
 ]);
 
 
