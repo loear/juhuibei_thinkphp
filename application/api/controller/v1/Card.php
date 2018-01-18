@@ -143,6 +143,7 @@ class Card
                 $prefix = substr($k2, 0, 3);
                 $suffix = substr($k2, -1, 3);
                 if ($prefix == 'pic' || $prefix == 'ima' || $suffix == '_bg') {
+                    $v2['img'] = getImageInfo($v2['value']);
                     $v2['type'] = 'img';
                     $tag[] = $v2;
                 } else if ($prefix == 'tex') {
