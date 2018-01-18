@@ -152,4 +152,14 @@ class Theme
         throw new ThemeMissException();
     }
 
+    public function getThemeList()
+    {
+        $theme_model = ThemeModel::field('id,name,preview,has_video')->limit('10')->select();
+        if ($theme_model) {
+            return ['res'=>0, 'data'=>$theme_model];
+        }
+        throw new ThemeMissException();
+    }
+
+
 }

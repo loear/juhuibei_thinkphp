@@ -41,6 +41,7 @@ Route::group('api/:version', [
     '/order'               => ['api/:version.Order/placeOrder',           ['method' => 'post']],                   // 下单
     '/order/:id'           => ['api/:version.Order/getDetail',            ['method' => 'get'], ['id' => '\d+']],   // 获取订单详情
     '/theme_module/:id'    => ['api/:version.Theme/getThemeModule',       ['method' => 'get'], ['id' => '\d+']],   // 获取主题页面
+    '/theme_list'          => ['api/:version.Theme/getThemeList',         ['method' => 'get']],                    // 获取主题列表
     '/bless/:id'           => ['api/:version.Bless/getBlessByCardId',     ['method' => 'get'], ['id' => '\d+']],   // 获取祝福列表
     '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
     '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
