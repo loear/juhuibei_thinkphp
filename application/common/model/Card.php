@@ -33,8 +33,8 @@ class Card extends BaseModel
         return $this->hasOne('Music', 'id', 'music_id');
     }
 
-    public function getweddingTimeAttr($value, $data)
+    /*public function getweddingTimeAttr($value, $data)
     {
         return date('Y-m-d H:i', $value);
-    }
+    }*/
 }

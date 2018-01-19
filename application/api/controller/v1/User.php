@@ -8,9 +8,11 @@
 
 namespace app\api\controller\v1;
 
+use app\api\service\WxCode;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\User as UserModel;
 use app\lib\exception\ActivityException;
+use think\Request;
 
 class User
 {
@@ -23,5 +25,21 @@ class User
         }
         throw new ActivityException();
     }
+
+    public function wxCode(Request $request)
+    {
+        $data = $request->get();
+        if ($data) {
+            $data['width'] = (int) $data['width'];
+            $data['auto_color'] = (bool) $data['auto_color'];
+            $weixin = new WxCode();
+            $file_name = $weixin->makeCode($data);
+            if ($file_name) {
+                return ['res'=>0, 'data'=>$file_name];
+            }
+            throw new ActivityException();
+        }
+    }
+
 
 }

@@ -46,6 +46,7 @@ Route::group('api/:version', [
     '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
     '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
     '/card_user/:id'       => ['api/:version.Card/getCardByUserId',       ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
+    '/wx_code'             => ['api/:version.User/wxCode',                ['method' => 'get']],                   // 获取卡 小程序码
 
 ]);
 
