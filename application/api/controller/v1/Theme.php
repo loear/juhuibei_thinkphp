@@ -152,10 +152,24 @@ class Theme
         throw new ThemeMissException();
     }
 
+    /**
+     * 获取主题列表 并查询出主题的模板卡
+     *
+     * @return array
+     * @throws ThemeMissException
+     */
     public function getThemeList()
     {
         $theme_model = ThemeModel::field('id,name,preview,has_video')->limit('10')->select();
         if ($theme_model) {
+            foreach ($theme_model as $v) {
+                $v->id;
+                $card_model = CardModel::field('id')->where(['theme_id'=>$v->id, 'is_theme'=>1])->find();
+                if ($card_model) {
+                    $card_id = $card_model->id;
+                }
+                $v->card_id = $card_id ? $card_id : 0;
+            }
             return ['res'=>0, 'data'=>$theme_model];
         }
         throw new ThemeMissException();

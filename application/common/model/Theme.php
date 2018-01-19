@@ -18,4 +18,9 @@ class Theme extends BaseModel
         return $this->hasMany('themeModule', 'theme_id', 'id');
     }
 
+    public function card()
+    {
+        return $this->belongsTo('Card');
+    }
+
 }
