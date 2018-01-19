@@ -18,6 +18,11 @@ class Card extends BaseModel
         return $this->hasOne('Theme', 'id', 'theme_id');
     }
 
+    public function user()
+    {
+        return $this->hasOne('User', 'id', 'user_id');
+    }
+
     public function config()
     {
         return $this->hasOne('Config', 'id', 'config_id');
@@ -26,5 +31,10 @@ class Card extends BaseModel
     public function music()
     {
         return $this->hasOne('Music', 'id', 'music_id');
+    }
+
+    public function getweddingTimeAttr($value, $data)
+    {
+        return date('Y-m-d H:i', $value);
     }
 }

@@ -113,6 +113,13 @@ class Card
         return ['field'=>1];
     }
 
+    /**
+     * 获取编辑的卡信息
+     *
+     * @param $id
+     * @return array
+     * @throws CardMissException
+     */
     public function editCardInfo($id)
     {
         (new IDMustBePostiveInt())->goCheck();
@@ -165,6 +172,33 @@ class Card
         unset($card_model->module_data);
         $card_model->has_video = $theme['has_video'];
         return ['res'=>0, 'data'=>$card_model];
+    }
+
+    /**
+     * 获取用户的卡信息
+     *
+     * @param $id
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws CardMissException
+     */
+    public function getCardByUserId($id) {
+        (new IDMustBePostiveInt())->goCheck();
+        $card_model = CardModel::field('id,theme_id,user_id,bride_name,bridegroom_name,wedding_time')
+            ->with([
+                'theme' =>  function ($query) {
+                    $query->withField('id,name,preview');
+                },
+                'user' =>  function ($query) {
+                    $query->withField('id,nickname,avatar_url');
+                }
+            ])
+            ->where(['user_id'=>$id])
+            ->select()
+        ;
+        if ($card_model) {
+            return ['res'=>0, 'data'=>$card_model];
+        }
+        throw new CardMissException();
     }
 
 }
