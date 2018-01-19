@@ -45,6 +45,7 @@ Route::group('api/:version', [
     '/bless/:id'           => ['api/:version.Bless/getBlessByCardId',     ['method' => 'get'], ['id' => '\d+']],   // 获取祝福列表
     '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
     '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
+    '/card_user/:id'       => ['api/:version.Card/getCardByUserId',       ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
 
 ]);
 
