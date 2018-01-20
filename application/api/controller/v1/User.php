@@ -34,7 +34,8 @@ class User
             $data['auto_color'] = (bool) $data['auto_color'];
             $weixin = new WxCode();
             $file_name = $weixin->makeCode($data);
-            if ($file_name) {
+            $file_name = 'https://www.juhuibei.com/' . $file_name;
+            if ($file_name) {g
                 return ['res'=>0, 'data'=>$file_name];
             }
             throw new ActivityException();
