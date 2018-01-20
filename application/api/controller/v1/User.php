@@ -35,7 +35,7 @@ class User
             $weixin = new WxCode();
             $file_name = $weixin->makeCode($data);
             $file_name = 'https://www.juhuibei.com/' . $file_name;
-            if ($file_name) {g
+            if ($file_name) {
                 return ['res'=>0, 'data'=>$file_name];
             }
             throw new ActivityException();

@@ -186,10 +186,7 @@ class Card
         $card_model = CardModel::field('id,theme_id,user_id,bride_name,bridegroom_name,wedding_time')
             ->with([
                 'theme' =>  function ($query) {
-                    $query->withField('id,name,preview');
-                },
-                'user' =>  function ($query) {
-                    $query->withField('id,nickname,avatar_url');
+                    $query->withField('id,name,preview,bg_color');
                 }
             ])
             ->where(['user_id'=>$id])
