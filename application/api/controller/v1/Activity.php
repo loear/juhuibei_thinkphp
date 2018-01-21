@@ -110,6 +110,14 @@ class Activity
             $activity_list[$k]['_start_time_diff'] = $start_time_diff;
             $activity_list[$k]['_end_time_diff']   = $end_time_diff;
             $activity_list[$k]['_numbers']         = InfoModel::where(['activity_id'=>$v['id'], 'is_coming'=>1])->count();
+            $activity_list[$k]['_master']          = InfoModel::field('user_id,activity_id,is_master')
+                ->with([
+                    'user' =>  function ($query) {
+                        $query->withField('avatar_url');
+                    }
+                ])
+                ->where(['activity_id'=>$v['id'], 'is_master'=>1])
+                ->find();
         }
         return ['res'=>0, 'data'=>$activity_list];
     }
