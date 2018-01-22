@@ -11,7 +11,9 @@ namespace app\api\controller\v1;
 use app\api\service\WxCode;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\User as UserModel;
+use app\common\model\Card as CardModel;
 use app\lib\exception\ActivityException;
+use app\lib\exception\UserException;
 use think\Request;
 
 class User
@@ -40,6 +42,33 @@ class User
             }
             throw new ActivityException();
         }
+    }
+
+    /**
+     * 获取用户的会员信息 | 如果是VIP1且请柬数量为1返回card_id theme_id
+     *
+     * @param $id
+     * @return vip card_id theme_id
+     */
+    public function getVipInfo($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $user_model = UserModel::field('id,vip')->find($id);
+        if ($user_model) {
+            $card_id = $theme_id = 0;
+            $card_count = CardModel::where(['user_id'=>$id])->count();
+            if ($user_model->vip == 1 && $card_count == 1) {
+                $card_model = CardModel::where(['user_id'=>$id])->find();
+                $card_id  = $card_model->id;
+                $theme_id = $card_model->theme_id;
+            }
+            $user_model->card_count = (int) $card_count;
+            $user_model->card_id    = (int) $card_id;
+            $user_model->theme_id   = (int) $theme_id;
+            return ['res'=>0, 'data'=>$user_model];
+        }
+        throw new UserException();
+
     }
 
 

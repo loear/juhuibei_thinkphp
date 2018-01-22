@@ -8,12 +8,15 @@
 
 namespace app\api\controller\v1;
 
+use app\api\validate\CardCoverMake;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\Card as CardModel;
 use app\common\model\Music as MusicModel;
 use app\common\model\Theme as ThemeModel;
 use app\lib\exception\CardMissException;
+use app\lib\exception\CreateCardException;
 use think\Db;
+use think\Request;
 
 class Card
 {
@@ -194,6 +197,73 @@ class Card
         ;
         if ($card_model) {
             return ['res'=>0, 'data'=>$card_model];
+        }
+        throw new CardMissException();
+    }
+
+    /**
+     * 覆盖制作
+     *
+     * @param Request $request
+     * @return array
+     * @throws CardMissException
+     */
+    public function coverMakeCard(Request $request)
+    {
+        (new CardCoverMake())->goCheck();
+        $card_id  = $request->post('card_id');
+        $theme_id = $request->post('theme_id');
+        $card_model = CardModel::find($card_id);
+        if ($card_model) {
+            $module_model = CardModel::field('module_data')->where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
+            $card_model->theme_id    = $theme_id;
+            $card_model->module_data = $module_model->module_data;
+            $card_model->save();
+            return ['res'=>0];
+        }
+        throw new CardMissException();
+    }
+
+    /**
+     * 创建一份请柬 ｜模板 ==复制==> 请柬
+     *
+     * @param Request $request
+     * @return array
+     * @throws CardMissException
+     * @throws CreateCardException
+     */
+    public function createCard(Request $request)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $user_id  = $request->post('user_id');
+        $theme_id = $request->post('theme_id');
+        $module_model = CardModel::field('module_data')->where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
+        if ($module_model) {
+            $card_model = new CardModel();
+            $card_model->user_id            = $user_id;
+            $card_model->theme_id           = $theme_id;
+            $card_model->is_theme           = 0;
+            $card_model->wedding_time       = time() + 864000; // 当前时间 + 10天
+
+            $card_model->bride_name         = $module_model->bride_name;
+            $card_model->bride_phone        = $module_model->bride_phone;
+            $card_model->bridegroom_name    = $module_model->bridegroom_name;
+            $card_model->bridegroom_phone   = $module_model->bridegroom_phone;
+            $card_model->cover              = $module_model->cover;
+            $card_model->flip               = $module_model->flip;
+            $card_model->longitude          = $module_model->longitude;
+            $card_model->latitude           = $module_model->latitude;
+            $card_model->music_id           = $module_model->music_id;
+            $card_model->wedding_address    = $module_model->wedding_address;
+            $card_model->module_data        = $module_model->module_data;
+            $card_model->config_id          = $module_model->config_id;
+            $card_model->wedding_video      = $module_model->wedding_video;
+            $card_model->wedding_video_cover= $module_model->wedding_video_cover;
+            $card_model->save();
+            if ($card_model->id) {
+                return ['res'=>0];
+            }
+            throw new CreateCardException();
         }
         throw new CardMissException();
     }

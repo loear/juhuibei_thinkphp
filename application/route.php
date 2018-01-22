@@ -46,7 +46,10 @@ Route::group('api/:version', [
     '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
     '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
     '/card_user/:id'       => ['api/:version.Card/getCardByUserId',       ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
-    '/wx_code'             => ['api/:version.User/wxCode',                ['method' => 'get']],                   // 获取卡 小程序码
+    '/wx_code'             => ['api/:version.User/wxCode',                ['method' => 'get']],                    // 获取卡 小程序码
+    '/vip_info/:id'        => ['api/:version.User/getVipInfo',            ['method' => 'get'], ['id' => '\d+']],   // 获取会员信息
+    '/cover_make'          => ['api/:version.Card/coverMakeCard',         ['method' => 'post']],                   // 覆盖制作
+    '/create_card'         => ['api/:version.Card/createCard',            ['method' => 'post']],                   // 创建请柬
 
 ]);
 
