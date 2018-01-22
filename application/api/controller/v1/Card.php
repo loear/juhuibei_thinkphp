@@ -8,9 +8,12 @@
 
 namespace app\api\controller\v1;
 
+use app\api\service\Token;
 use app\api\validate\CardCoverMake;
+use app\api\validate\CardCreate;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\Card as CardModel;
+use app\common\model\User as UserModel;
 use app\common\model\Music as MusicModel;
 use app\common\model\Theme as ThemeModel;
 use app\lib\exception\CardMissException;
@@ -234,13 +237,13 @@ class Card
      */
     public function createCard(Request $request)
     {
-        (new IDMustBePostiveInt())->goCheck();
-        $user_id  = $request->post('user_id');
+        (new CardCreate())->goCheck();
+        $uid = Token::getCurrentUid();
         $theme_id = $request->post('theme_id');
-        $module_model = CardModel::field('module_data')->where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
+        $module_model = CardModel::where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
         if ($module_model) {
             $card_model = new CardModel();
-            $card_model->user_id            = $user_id;
+            $card_model->user_id            = $uid;
             $card_model->theme_id           = $theme_id;
             $card_model->is_theme           = 0;
             $card_model->wedding_time       = time() + 864000; // 当前时间 + 10天
@@ -259,8 +262,11 @@ class Card
             $card_model->config_id          = $module_model->config_id;
             $card_model->wedding_video      = $module_model->wedding_video;
             $card_model->wedding_video_cover= $module_model->wedding_video_cover;
-            $card_model->save();
+            $card_model->isUpdate(false)->save();
             if ($card_model->id) {
+                $user_model = UserModel::find($uid);
+                $user_model->vip = $user_model->vip + 1;
+                $user_model->isUpdate(true)->save();
                 return ['res'=>0];
             }
             throw new CreateCardException();

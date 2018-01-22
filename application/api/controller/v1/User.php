@@ -8,6 +8,7 @@
 
 namespace app\api\controller\v1;
 
+use app\api\service\Token;
 use app\api\service\WxCode;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\User as UserModel;
@@ -47,18 +48,18 @@ class User
     /**
      * 获取用户的会员信息 | 如果是VIP1且请柬数量为1返回card_id theme_id
      *
-     * @param $id
-     * @return vip card_id theme_id
+     * @return array
+     * @throws UserException
      */
-    public function getVipInfo($id)
+    public function getVipInfo()
     {
-        (new IDMustBePostiveInt())->goCheck();
-        $user_model = UserModel::field('id,vip')->find($id);
+        $uid = Token::getCurrentUid();
+        $user_model = UserModel::field('id,vip')->find($uid);
         if ($user_model) {
             $card_id = $theme_id = 0;
-            $card_count = CardModel::where(['user_id'=>$id])->count();
+            $card_count = CardModel::where(['user_id'=>$uid])->count();
             if ($user_model->vip == 1 && $card_count == 1) {
-                $card_model = CardModel::where(['user_id'=>$id])->find();
+                $card_model = CardModel::where(['user_id'=>$uid])->find();
                 $card_id  = $card_model->id;
                 $theme_id = $card_model->theme_id;
             }
@@ -68,7 +69,6 @@ class User
             return ['res'=>0, 'data'=>$user_model];
         }
         throw new UserException();
-
     }
 
 

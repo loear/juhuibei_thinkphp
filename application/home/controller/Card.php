@@ -25,6 +25,7 @@ class Card extends Controller
     {
         (new IDMustBePostiveInt())->goCheck();
         $card_model = CardModel::with('theme')->find($id);
+        $title = $card_model->bridegroom_name . ' ❤ ' . $card_model->bride_name . ' の 婚礼请柬';
         $global_css = $card_model->theme->global_css;
         $site_config_arr = [
             'theme_id'=>$card_model->theme_id,
@@ -34,7 +35,7 @@ class Card extends Controller
             'cover'     =>  $card_model->cover
         ];
         $site_config = json_encode($site_config_arr);
-        $this->assign(compact('global_css', 'site_config'));
+        $this->assign(compact('global_css', 'site_config', 'title'));
         return view();
     }
 
