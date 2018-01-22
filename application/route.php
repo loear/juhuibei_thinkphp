@@ -45,7 +45,7 @@ Route::group('api/:version', [
     '/bless/:id'           => ['api/:version.Bless/getBlessByCardId',     ['method' => 'get'], ['id' => '\d+']],   // 获取祝福列表
     '/card/:id'            => ['api/:version.Card/getCardById',           ['method' => 'get'], ['id' => '\d+']],   // 获取卡 前端页面
     '/card_edit/:id'       => ['api/:version.Card/editCardInfo',          ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
-    '/card_user/:id'       => ['api/:version.Card/getCardByUserId',       ['method' => 'get'], ['id' => '\d+']],   // 获取卡 小程序编辑页面
+    '/user_card'           => ['api/:version.Card/getUserCardAll',        ['method' => 'get']],                    // 获取用户请柬
     '/wx_code'             => ['api/:version.User/wxCode',                ['method' => 'get']],                    // 获取卡 小程序码
     '/vip_info'            => ['api/:version.User/getVipInfo',            ['method' => 'get']],                    // 获取会员信息
     '/cover_make'          => ['api/:version.Card/coverMakeCard',         ['method' => 'post']],                   // 覆盖制作

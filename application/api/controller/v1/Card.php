@@ -183,19 +183,18 @@ class Card
     /**
      * 获取用户的卡信息
      *
-     * @param $id
-     * @return false|\PDOStatement|string|\think\Collection
+     * @return array
      * @throws CardMissException
      */
-    public function getCardByUserId($id) {
-        (new IDMustBePostiveInt())->goCheck();
+    public function getUserCardAll() {
+        $uid = Token::getCurrentUid();
         $card_model = CardModel::field('id,theme_id,user_id,bride_name,bridegroom_name,wedding_time')
             ->with([
                 'theme' =>  function ($query) {
                     $query->withField('id,name,preview,bg_color');
                 }
             ])
-            ->where(['user_id'=>$id])
+            ->where(['user_id'=>$uid])
             ->select()
         ;
         if ($card_model) {
