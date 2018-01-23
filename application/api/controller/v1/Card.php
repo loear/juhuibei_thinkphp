@@ -129,26 +129,32 @@ class Card
     public function editCardInfo($id)
     {
         (new IDMustBePostiveInt())->goCheck();
-        $card_model = CardModel::find($id);
-        if (!$card_model) throw new CardMissException();
-        $card_model->card_id = $card_model->id;
-        $card_model->map_point = $card_model->longitude . ',' . $card_model->latitude;
-        $music = Db::table('__MUSIC__')
-            ->field('url')
-            ->where('id', $card_model->music_id)
-            ->find()
+        $card_model = CardModel::field('
+            bride_name,
+            bride_phone,
+            bridegroom_name,
+            bridegroom_phone,
+            wedding_time,
+            latitude,
+            longitude,
+            wedding_address,
+            cover,
+            wedding_video,
+            wedding_video_cover,
+            music_id,
+            theme_id,
+            module_data
+        ')
+            ->find($id)
         ;
+        if (!$card_model) throw new CardMissException();
         $music_list = MusicModel::all();
         foreach ($music_list as $k=>$v) {
             if ($v['id'] == $card_model->music_id) {
                 $v['checked'] = 1;
             }
         }
-        $theme = Db::table('__THEME__')
-            ->field('has_video')
-            ->where('id', $card_model->theme_id)
-            ->find()
-        ;
+        $theme = ThemeModel::field('has_video')->where(['id'=>$card_model->theme_id])->find();
         $module_data = json_decode($card_model->module_data, true);
         $tag = [];
         foreach ($module_data as $k=>$v) {
@@ -157,27 +163,21 @@ class Card
                 $suffix = substr($k2, -1, 3);
                 if ($prefix == 'pic' || $prefix == 'ima' || $suffix == '_bg') {
                     $v2['img'] = getImageInfo($v2['value']);
-                    $v2['type'] = 'img';
-                    $tag[] = $v2;
-                } else if ($prefix == 'tex') {
-                    $v2['type'] = 'txt';
                     $tag[] = $v2;
                 }
             }
         }
-
-        $data = date('Y-m-d', $card_model->wedding_time);
+        $date = date('Y-m-d', $card_model->wedding_time);
         $time = date('H:i', $card_model->wedding_time);
-        $card_model->data = $data;
+        $card_model->date = $date;
         $card_model->time = $time;
-        $card_model->music = $music['url'];
-        $card_model->music_list = $music_list;
-        $card_model->tag = $tag;
         $card_model->cover = getImageInfo($card_model->cover);
         $card_model->wedding_video_cover = getImageInfo($card_model->wedding_video_cover);
+        $card_model->has_video = $theme->has_video;
         unset($card_model->module_data);
-        $card_model->has_video = $theme['has_video'];
-        return ['res'=>0, 'data'=>$card_model];
+        unset($card_model->theme_id);
+        unset($card_model->wedding_time);
+        return ['res'=>0, 'data'=>['form'=>$card_model, 'tag'=>$tag, 'music_list'=>$music_list]];
     }
 
     /**

@@ -141,16 +141,6 @@ class Theme
 
     }
 
-    public function getThemeModule($id)
-    {
-        (new IDMustBePostiveInt())->goCheck();
-        $theme_model = ThemeModel::with('themeModule.module')->find($id);
-        if ($theme_model) {
-            unset($theme_model->global_css);
-            return ['res'=>0, 'data'=>$theme_model];
-        }
-        throw new ThemeMissException();
-    }
 
     /**
      * 获取主题列表 并查询出主题的模板卡
