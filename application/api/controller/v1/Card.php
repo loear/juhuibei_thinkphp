@@ -151,7 +151,7 @@ class Card
         $music_list = MusicModel::all();
         foreach ($music_list as $k=>$v) {
             if ($v['id'] == $card_model->music_id) {
-                $v['checked'] = 1;
+                $v['checked'] = true;
             }
         }
         $theme = ThemeModel::field('has_video')->where(['id'=>$card_model->theme_id])->find();
