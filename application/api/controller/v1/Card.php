@@ -11,6 +11,7 @@ namespace app\api\controller\v1;
 use app\api\service\Token;
 use app\api\validate\CardCoverMake;
 use app\api\validate\CardCreate;
+use app\api\validate\CardSave;
 use app\api\validate\IDMustBePostiveInt;
 use app\common\model\Card as CardModel;
 use app\common\model\User as UserModel;
@@ -23,8 +24,43 @@ use think\Request;
 
 class Card
 {
-    public function saveCard()
+    public function saveCard(Request $request)
     {
+        (new CardSave())->goCheck();
+        $data = $request->post();
+        $card_model = CardModel::find($data['card_id']);
+        if ($card_model) {
+            $card_model->bride_name         = $data['bride_name'];
+            $card_model->bride_phone        = $data['bride_phone'];
+            $card_model->bridegroom_name    = $data['bridegroom_name'];
+            $card_model->bridegroom_phone   = $data['bridegroom_phone'];
+            $card_model->cover              = $data['cover'];
+            $card_model->longitude          = $data['longitude'];
+            $card_model->latitude           = $data['latitude'];
+            $card_model->wedding_address    = $data['wedding_address'];
+            $card_model->wedding_time       = strtotime($data['date'] . ' ' . $data['time']);
+            $card_model->wedding_video      = $data['wedding_video'];
+            $card_model->wedding_video_cover= $data['wedding_video_cover'];
+            if ($data['music_id']) {
+                $card_model->music_id = $data['music_id'];
+            }
+            if ($data['tag_change']) {
+                $module_data = json_decode($card_model->module_data, true);
+                foreach ($module_data as $k=>$v) {
+                    foreach ($v[$v['tpl_mark_name']] as $k2=>$v2) {
+                        foreach ($data['tag'] as $k3=>$v3) {
+                            if ($v2[$v2['tag_name']]['tag_id'] == $v3['tag_id']) {
+                                $module_data[$k][$v['tpl_mark_name']][$k2][$v2['tag_name']] = $v3;
+                            }
+                        }
+                    }
+                }
+                $card_model->module_data = json_encode($module_data);
+            }
+            $card_model->isUpdate(true)->save();
+            return ['res'=>0];
+        }
+        throw new CardMissException();
 
     }
 

@@ -49,6 +49,7 @@ Route::group('api/:version', [
     '/vip_info'            => ['api/:version.User/getVipInfo',            ['method' => 'get']],                    // 获取会员信息
     '/cover_make'          => ['api/:version.Card/coverMakeCard',         ['method' => 'post']],                   // 覆盖制作
     '/create_card'         => ['api/:version.Card/createCard',            ['method' => 'post']],                   // 创建请柬
+    '/save_card'           => ['api/:version.Card/saveCard',              ['method' => 'post']],                   // 保存请柬
 
 ]);
 
