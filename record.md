@@ -37,3 +37,39 @@ TRUNCATE ng_theme_module;
 73
 
 https://www.pica.im/card/preview/26#pc_preview
+
+card.js 74行
+
+```angular2html
+          e.cover += "?/sq/150", p.ready(function() {
+```
+
+去掉`?/sq/150`
+
+```angular2html
+          e.cover += "", p.ready(function() {
+```
+
+236行
+
+```angular2html
+ p && (h.value = 1e3 * d), u.indexOf("lsc_time") > -1 && (h.value = this.data.wedding_time ? 1e3 * this.data.wedding_time : +new Date), u.indexOf("phone") > -1 && l.push("phone"), this.webp_usable && /jpg|png|jpeg$/.test(d) && (h.value = d + "!webp"), n || p || (h.font_family && (this.fonts_url.push(h.font_family), this.font_family_list[o] || (this.font_family_list[o] = []), E && _.set(t.module_id + u + "_font", h.font_family), this.font_family_list[o].push({
+```
+
+去掉`!webp`
+
+```angular2html
+ p && (h.value = 1e3 * d), u.indexOf("lsc_time") > -1 && (h.value = this.data.wedding_time ? 1e3 * this.data.wedding_time : +new Date), u.indexOf("phone") > -1 && l.push("phone"), this.webp_usable && /jpg|png|jpeg$/.test(d) && (h.value = d + ""), n || p || (h.font_family && (this.fonts_url.push(h.font_family), this.font_family_list[o] || (this.font_family_list[o] = []), E && _.set(t.module_id + u + "_font", h.font_family), this.font_family_list[o].push({
+```
+
+174 行 
+
+```angular2html
+ i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + "!/sq/150)"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
+```
+
+去掉去掉`!/sq/150`
+
+```angular2html
+ i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + ")"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
+```

@@ -71,7 +71,7 @@
             var n = document.title,
                 s = $('meta[name="description"]').attr("content"),
                 o = siteConfig.host + "/card/" + e.user_id + "/" + e.card_id;
-            e.cover += "?/sq/150", p.ready(function() {
+            e.cover += "", p.ready(function() {
                 window.bgMusic && window.bgMusic.play(), p.onMenuShareAppMessage({
                     title: n,
                     desc: s,
@@ -171,7 +171,7 @@
                 font_family_list: {},
                 initData: function(t, e) {
                     var i = this;
-                    i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + "!/sq/150)"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
+                    i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + ")"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
                     var n = location.search.match(/from_bless\=(\d)/);
                     i.skip_to_bless = n ? Number(n[1]) : 1, i.has_wx_auth = !! t.wx_info, i.has_wx_auth || !T && !E || $("body").addClass("no-wx-auth");
                     var s = "/api/v1/card/" + t.card_id;
@@ -233,7 +233,7 @@
                         var h = a[s][u],
                             d = h.value,
                             p = u.indexOf("wedding_time") > -1;
-                        p && (h.value = 1e3 * d), u.indexOf("lsc_time") > -1 && (h.value = this.data.wedding_time ? 1e3 * this.data.wedding_time : +new Date), u.indexOf("phone") > -1 && l.push("phone"), this.webp_usable && /jpg|png|jpeg$/.test(d) && (h.value = d + "!webp"), n || p || (h.font_family && (this.fonts_url.push(h.font_family), this.font_family_list[o] || (this.font_family_list[o] = []), E && _.set(t.module_id + u + "_font", h.font_family), this.font_family_list[o].push({
+                        p && (h.value = 1e3 * d), u.indexOf("lsc_time") > -1 && (h.value = this.data.wedding_time ? 1e3 * this.data.wedding_time : +new Date), u.indexOf("phone") > -1 && l.push("phone"), this.webp_usable && /jpg|png|jpeg$/.test(d) && (h.value = d + ""), n || p || (h.font_family && (this.fonts_url.push(h.font_family), this.font_family_list[o] || (this.font_family_list[o] = []), E && _.set(t.module_id + u + "_font", h.font_family), this.font_family_list[o].push({
                             className: u,
                             val: h.font_family
                         })), h.font_color && (this.font_color_list[o] || (this.font_color_list[o] = []), this.font_color_list[o].push({
@@ -464,8 +464,13 @@
                         address: t.find(".wedding_address").find(".m-animate").text()
                     }), this.lcMap.init();
                     var l = this;
+                    var map = e.data("point").split(',')
+                    var longitude = map[0];
+                    var latitude = map[1];
+                    var url = '/pages/navigation/index?latitude=' + latitude + '&longitude=' + longitude;
                     $(".navigation_btn").off("click").on("click", function() {
-                        l.goNavigation()
+                        wx.miniProgram.redirectTo({ url: url });
+                        // l.goNavigation();
                     })
                 },
                 bless: null,

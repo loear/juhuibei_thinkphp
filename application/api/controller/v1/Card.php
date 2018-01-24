@@ -30,6 +30,8 @@ class Card
         $data = $request->post();
         $card_model = CardModel::find($data['card_id']);
         if ($card_model) {
+            $wedding_time = strtotime($data['date'] . ' ' . $data['time']);
+            $map_point = $data['longitude'] . ',' . $data['latitude'];
             $card_model->bride_name         = $data['bride_name'];
             $card_model->bride_phone        = $data['bride_phone'];
             $card_model->bridegroom_name    = $data['bridegroom_name'];
@@ -38,24 +40,48 @@ class Card
             $card_model->longitude          = $data['longitude'];
             $card_model->latitude           = $data['latitude'];
             $card_model->wedding_address    = $data['wedding_address'];
-            $card_model->wedding_time       = strtotime($data['date'] . ' ' . $data['time']);
+            $card_model->wedding_time       = $wedding_time;
             $card_model->wedding_video      = $data['wedding_video'];
             $card_model->wedding_video_cover= $data['wedding_video_cover'];
-            if ($data['music_id']) {
-                $card_model->music_id = $data['music_id'];
-            }
-            if ($data['tag_change']) {
-                $module_data = json_decode($card_model->module_data, true);
-                foreach ($module_data as $k=>$v) {
-                    foreach ($v[$v['tpl_mark_name']] as $k2=>$v2) {
-                        foreach ($data['tag'] as $k3=>$v3) {
-                            if ($v2[$v2['tag_name']]['tag_id'] == $v3['tag_id']) {
-                                $module_data[$k][$v['tpl_mark_name']][$k2][$v2['tag_name']] = $v3;
+
+            $module_data = json_decode($card_model->module_data, true);
+            foreach ($module_data as $k=>$v) {
+                foreach ($v[$v['tpl_mark_name']] as $k2=>$v2) {
+                    $prefix = substr($k2, 0, 3);
+                    $suffix = substr($k2, -1, 3);
+                    if ($k2 == 'wedding_time') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $wedding_time;
+                    } else if ($k2 == 'bride_name') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['bride_name'];
+                    } else if ($k2 == 'wedding_address') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['wedding_address'];
+                    } else if ($k2 == 'bridegroom_name') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['bridegroom_name'];
+                    } else if ($k2 == 'wedding_video') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['wedding_video'];
+                    } else if ($k2 == 'wedding_video_cover') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['wedding_video_cover'];
+                    } else if ($k2 == 'bridegroom_phone') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['bridegroom_phone'];
+                    } else if ($k2 == 'bride_phone') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $data['bride_phone'];
+                    } else if ($k2 == 'map_point') {
+                        $module_data[$k][$v['tpl_mark_name']][$k2]['value'] = $map_point;
+                    }else if ($prefix == 'pic' || $prefix == 'ima' || $suffix == '_bg') {
+                        if ($data['tag_change']) {
+                            foreach ($data['tag'] as $k3=>$v3) {
+                                unset($v3['img']);
+                                if ($v2['tag_id'] == $v3['tag_id']) {
+                                    $module_data[$k][$v['tpl_mark_name']][$k2] = $v3;
+                                }
                             }
                         }
                     }
                 }
-                $card_model->module_data = json_encode($module_data);
+            }
+            $card_model->module_data = json_encode($module_data);
+            if ($data['music_id']) {
+                $card_model->music_id = $data['music_id'];
             }
             $card_model->isUpdate(true)->save();
             return ['res'=>0];
