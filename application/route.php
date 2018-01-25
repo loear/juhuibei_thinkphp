@@ -50,6 +50,7 @@ Route::group('api/:version', [
     '/cover_make'          => ['api/:version.Card/coverMakeCard',         ['method' => 'post']],                   // 覆盖制作
     '/create_card'         => ['api/:version.Card/createCard',            ['method' => 'post']],                   // 创建请柬
     '/save_card'           => ['api/:version.Card/saveCard',              ['method' => 'post']],                   // 保存请柬
+    '/save_bless'          => ['api/:version.Bless/saveBless',            ['method' => 'post']],                   // 发送祝福
 
 ]);
 

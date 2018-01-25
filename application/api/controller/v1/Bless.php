@@ -10,9 +10,13 @@ namespace app\api\controller\v1;
 
 
 
+use app\api\service\Token;
+use app\api\validate\BlessSave;
 use app\api\validate\IDMustBePostiveInt;
 use app\lib\exception\BlessMissException;
+use app\common\model\Bless as BlessModel;
 use think\Db;
+use think\Request;
 
 class Bless
 {
@@ -32,6 +36,33 @@ class Bless
         }
         throw new BlessMissException();
     }
+
+    /**
+     * 发送祝福
+     *
+     * @param Request $request
+     * @return array
+     * @throws BlessMissException
+     */
+    public function saveBless(Request $request)
+    {
+        (new BlessSave())->goCheck();
+        $uid = Token::getCurrentUid();
+        $data = $request->post();
+        $count = BlessModel::where(['user_id'=>$uid, 'card_id'=>$data['card_id']])->count();
+        if ($count) return ['res'=>1, 'data'=>'已经祝福过了'];
+        $bless_model = new BlessModel();
+        $bless_model->user_id = $uid;
+        $bless_model->card_id = $data['card_id'];
+        $bless_model->content = $data['content'];
+        $bless_model->cate_id = $data['cate_id'];
+        $bless_model->isUpdate(false)->save();
+        if ($bless_model->id) {
+            return ['res'=>0];
+        }
+        throw new BlessMissException();
+    }
+
 
 
 }
