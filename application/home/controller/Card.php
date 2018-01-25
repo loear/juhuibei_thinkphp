@@ -30,8 +30,7 @@ class Card extends Controller
         $site_config_arr = [
             'theme_id'=>$card_model->theme_id,
             'card_id'   =>  $id,
-//            'user_id'   =>  $card_model->user_id,
-            'user_id'   =>  0,
+            'user_id'   =>  $card_model->user_id,
             'cover'     =>  $card_model->cover
         ];
         $site_config = json_encode($site_config_arr);
