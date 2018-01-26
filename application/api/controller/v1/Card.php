@@ -20,6 +20,7 @@ use app\common\model\Theme as ThemeModel;
 use app\lib\exception\CardMissException;
 use app\lib\exception\CreateCardException;
 use think\Db;
+use think\Exception;
 use think\Request;
 
 class Card
@@ -335,4 +336,22 @@ class Card
         throw new CardMissException();
     }
 
+    public function saveVoice(Request $request)
+    {
+        $file = $request->file('voice');
+        if ($file) {
+            $path = ROOT_PATH . 'public' . DS . 'card/voice';
+            $info = $file->move($path);
+            $file_path = $info->getSaveName();
+            $silk = $path . '/' . $file_path;
+            $webm = str_replace('silk', 'webm', $silk);
+            $content = file_get_contents($silk);
+            $baseSilk = base64_decode(str_replace("data:audio/webm;base64,", '', $content));
+            file_put_contents($webm, $baseSilk);
+            $url = str_replace('silk', 'webm', $file_path);
+            return $url;
+        }
+        throw new Exception('上传有误');
+
+    }
 }

@@ -662,7 +662,9 @@
                     maskId: "#layout-mask"
                 });
                 t.on("select:confirm", function(t) {
-                    0 === t.index && (window.location.href = "/card/api/wx_auth/" + C.config.user_id + "/" + C.config.card_id + "?from_bless=0")
+                    var url = '/pages/card/bless/index?card_id=' + C.config.card_id;
+                    wx.miniProgram.navigateTo({ url: url });
+                    // 0 === t.index && (window.location.href = "/card/api/wx_auth/" + C.config.user_id + "/" + C.config.card_id + "?from_bless=0")
                 }), t.on("select:cansel", function() {
                     C.changeWxAuth(), C.bless && C.bless.authed(), e.$receipt_form.find(".receipt-ipt").eq(0).focus(), e.$receipt_form.off("click"), e.$receipt_btn.off("click"), e.initEvt()
                 })
@@ -789,7 +791,9 @@
                         maskId: "#layout-mask"
                     });
                     e.on("select:confirm", function(t) {
-                        0 === t.index && (window.location.href = "/card/api/wx_auth/" + C.config.user_id + "/" + C.config.card_id + "?from_bless=1")
+                        var url = '/pages/card/bless/index?card_id=' + C.config.card_id;
+                        wx.miniProgram.navigateTo({ url: url });
+                        /*0 === t.index && (window.location.href = "/card/api/wx_auth/" + C.config.user_id + "/" + C.config.card_id + "?from_bless=1")*/
                     }), e.on("select:cansel", function() {
                         C.changeWxAuth(), C.receipt && C.receipt.authed(), $(".J_blessing_mask").off("click").remove(), t.$blessing.show(), t.initEvts()
                     })
