@@ -35,6 +35,9 @@ Route::group('api/:version', [
     '/save_coming'         => ['api/:version.Activity/saveUserComing',    ['method' => 'post']],                   // 保存参加聚会人员信息
     '/user_info/:id'       => ['api/:version.User/getUserInfo',           ['method' => 'get'], ['id' => '\d+']],   // 获取用户信息
     '/games'               => ['api/:version.Game/getGamesAll',           ['method' => 'get']],                    // 获取所有游戏列表
+    '/activity_created'    => ['api/:version.Activity/getActivityCreated',['method' => 'get']],                    // 获取用户创建的
+    '/activity_joined'    => ['api/:version.Activity/getActivityjoined',  ['method' => 'get']],                    // 获取用户参加的
+
     '/token/user'          => ['api/:version.Token/getToken',             ['method' => 'post']],                   // 获取TOKEN
     '/token/verify'        => ['api/:version.Token/verifyToken',          ['method' => 'post']],                   // 验证TOKEN
     '/token/info'          => ['api/:version.Token/saveUserInfo',         ['method' => 'post']],                   // 保存用户信息

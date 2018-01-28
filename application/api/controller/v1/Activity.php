@@ -10,6 +10,7 @@ namespace app\api\controller\v1;
 
 use app\api\service\SendMessage;
 use app\api\service\Template;
+use app\api\service\Token;
 use app\api\validate\ActivitySave;
 use app\api\validate\ActivityImageSave;
 use app\api\validate\ActivityUserSave;
@@ -117,7 +118,9 @@ class Activity
                     }
                 ])
                 ->where(['activity_id'=>$v['id'], 'is_master'=>1])
-                ->find();
+                ->find()
+            ;
+            $activity_list[$k]['_start_date']         = date('m月d日 H:i', $v['start_time']);
         }
         return ['res'=>0, 'data'=>$activity_list];
     }
@@ -263,6 +266,100 @@ class Activity
             }
         }
         throw new ActivityException();
+    }
+
+    /**
+     * 获取用户创建的活动
+     *
+     * @return array
+     * @throws ActivityMissException
+     */
+    public function getActivityCreated()
+    {
+        $uid = Token::getCurrentUid();
+        $mounth = [
+          1 => 'January',
+          2 => 'February',
+          3 => 'March',
+          4 => 'April',
+          5 => 'May',
+          6 => 'June',
+          7 => 'July',
+          8 => 'Aguest',
+          9 => 'September',
+          10 => 'October',
+          11 => 'November',
+          12 => 'December',
+        ];
+        $activity_list = [];
+        for ($i = 1; $i <= 12; ++$i) {
+            $activity_data = ActivityModel::hasWhere('info', ['user_id'=>$uid, 'is_master'=>1])
+                ->field('DATE_FORMAT(FROM_UNIXTIME(start_time),"%e") as _start_day')
+                ->where(['DATE_FORMAT(FROM_UNIXTIME(start_time),"%m")'=>$i])
+                ->select()
+                ->toArray()
+            ;
+            if ($activity_data) {
+                $arr['lists'] = $activity_data;
+                $arr['open'] = false;
+                $arr['name'] = $i . '月';
+                $arr['en_name'] = $mounth[$i];
+                $arr['id'] = $i;
+                array_push($activity_list, $arr);
+            }
+        }
+        if (!$activity_list) {
+            throw new ActivityMissException();
+        }
+        $user_info = UserModel::field('id,username,nickname,avatar_url')->find($uid);
+        return ['res'=>0, 'data'=>['user'=>$user_info, 'lists'=>$activity_list]];
+    }
+
+    /**
+     * 获取用户参加的活动
+     *
+     * @return array
+     * @throws ActivityMissException
+     */
+    public function getActivityjoined()
+    {
+        $uid = Token::getCurrentUid();
+        $mounth = [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'Aguest',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December',
+        ];
+        $activity_list = [];
+        for ($i = 1; $i <= 12; ++$i) {
+            $activity_data = ActivityModel::hasWhere('info', ['user_id'=>$uid, 'is_coming'=>1])
+                ->field('DATE_FORMAT(FROM_UNIXTIME(start_time),"%e") as _start_day')
+                ->where(['DATE_FORMAT(FROM_UNIXTIME(start_time),"%m")'=>$i])
+                ->select()
+                ->toArray()
+            ;
+            if ($activity_data) {
+                $arr['lists'] = $activity_data;
+                $arr['open'] = false;
+                $arr['name'] = $i . '月';
+                $arr['en_name'] = $mounth[$i];
+                $arr['id'] = $i;
+                array_push($activity_list, $arr);
+            }
+        }
+        if (!$activity_list) {
+            throw new ActivityMissException();
+        }
+        $user_info = UserModel::field('id,username,nickname,avatar_url')->find($uid);
+        return ['res'=>0, 'data'=>['user'=>$user_info, 'lists'=>$activity_list]];
     }
 
     public function enCryptedData(Request $request)
