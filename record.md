@@ -73,3 +73,20 @@ card.js 74行
 ```angular2html
  i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + ")"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
 ```
+
+
+```angular2html
+1. 用户有依次为普通、黄金、钻石、至尊4个等级;
+2. 黄金等级以上的用户所创建的聚会活动可永久保存;
+3. 普通用户创建的在聚会结束后一段时间会空间释放;
+4. 黄金及以上的用户上传照片至「影集」不限制数量;
+5. 普通用户每个聚会都可以上传3张照片至「影集」;
+6. 普通用户在「个人中心」可以升级为黄金用户。
+```
+
+```angular2html
+1. 用户有依次为普通、黄金、钻石、至尊4个等级;
+2. 只有黄金等级以上的用户可以制作婚礼请柬;
+3. 钻石等级以上用户创建请柬不限数量;
+4. 至尊用户享受定制的婚礼请柬;
+```

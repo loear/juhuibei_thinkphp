@@ -64,5 +64,21 @@ class Bless
     }
 
 
+    public function joinWedding(Request $request)
+    {
+        $data = $request->post();
+        $bless_model = BlessModel::where(['user_id'=>$data['user_id'], 'card_id'=>$data['card_id']])
+            ->find()
+        ;
+        if ($bless_model) {
+            $bless_model->receipt_num  = $data['part_num'];
+            $bless_model->receipt_name = $data['user_name'];
+            $bless_model->isUpdate(true)->save();
+        }
+
+    }
+
+
+
 
 }
