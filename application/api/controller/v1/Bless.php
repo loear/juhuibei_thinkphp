@@ -67,6 +67,7 @@ class Bless
     public function joinWedding(Request $request)
     {
         $data = $request->post();
+        dump($data);die;
         $bless_model = BlessModel::where(['user_id'=>$data['user_id'], 'card_id'=>$data['card_id']])
             ->find()
         ;

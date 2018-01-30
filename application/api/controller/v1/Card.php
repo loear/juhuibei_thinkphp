@@ -31,6 +31,8 @@ class Card
         $data = $request->post();
         $card_model = CardModel::find($data['card_id']);
         if ($card_model) {
+            $has_video = $data['has_video'];
+            $has_video_ori = $data['has_video_ori'];
             $wedding_time = strtotime($data['date'] . ' ' . $data['time']);
             $map_point = $data['longitude'] . ',' . $data['latitude'];
             $card_model->bride_name         = $data['bride_name'];
@@ -42,11 +44,20 @@ class Card
             $card_model->latitude           = $data['latitude'];
             $card_model->wedding_address    = $data['wedding_address'];
             $card_model->wedding_time       = $wedding_time;
-            $card_model->wedding_video      = $data['wedding_video'];
-            $card_model->wedding_video_cover= $data['wedding_video_cover'];
-
+            $card_model->video_switch       = (int)$has_video;
+            if ($has_video) {
+                $card_model->wedding_video = $data['wedding_video'];
+                $card_model->wedding_video_cover = $data['wedding_video_cover'];
+            }
             $module_data = json_decode($card_model->module_data, true);
+            $module_data_new = [];
             foreach ($module_data as $k=>$v) {
+                if ($has_video_ori && !$has_video) {
+                    if ($v['tpl_mark_name'] == 'video') {
+                        unset($module_data[$k]);
+                        continue;
+                    }
+                }
                 foreach ($v[$v['tpl_mark_name']] as $k2=>$v2) {
                     $prefix = substr($k2, 0, 3);
                     $suffix = substr($k2, -1, 3);
@@ -79,8 +90,9 @@ class Card
                         }
                     }
                 }
+                $module_data_new[] = $module_data[$k];
             }
-            $card_model->module_data = json_encode($module_data);
+            $card_model->module_data = json_encode($module_data_new);
             if ($data['music_id']) {
                 $card_model->music_id = $data['music_id'];
             }
@@ -206,7 +218,8 @@ class Card
             wedding_video_cover,
             music_id,
             theme_id,
-            module_data
+            module_data,
+            video_switch
         ')
             ->find($id)
         ;
@@ -236,7 +249,8 @@ class Card
         $card_model->time = $time;
         $card_model->cover = getImageInfo($card_model->cover);
         $card_model->wedding_video_cover = getImageInfo($card_model->wedding_video_cover);
-        $card_model->has_video = $theme->has_video;
+        $card_model->has_video = (bool)$theme->has_video;
+        $card_model->video_switch = (bool)$card_model->video_switch;
         unset($card_model->module_data);
         unset($card_model->theme_id);
         unset($card_model->wedding_time);

@@ -141,8 +141,9 @@ function httpRequest($url, $method="GET", $postfields = null, $headers = array()
     //return array($http_code, $response,$requestinfo);
 }
 
-function getImageInfo($url)
+function getImageInfo($url = '')
 {
+    if ($url == '') return '';
     $data = getimagesize($url);
     return [
         'url'   =>  $url,
