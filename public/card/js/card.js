@@ -703,7 +703,12 @@
                         card_id: t.card_id,
                         csrfmiddlewaretoken: $("#csrf").val()
                     };
-                    $.post("/card/api/join/wedding", o, function(e) {
+                    if (o.user_id == 0) {
+                        a("提交失败");
+                        C.skipToPage("bless");
+                        return false;
+                    }
+                    $.post("/api/v1/join_wedding", o, function(e) {
                         if (e.success) {
                             config.wx_info || (config.wx_info = {}, config.wx_info.wx_user_id = e.data.wx_user_id);
                             var s = $.dialog({
@@ -820,7 +825,9 @@
             $(".blessing-black-mask").on("click", function() {
                 s = !1, e.removeClass("disabled"), $(".blessing-black-mask").removeClass("active"), $(".blessing-wrap").removeClass("active")
             }), T && (this.$el.on("click", ".J_send-voice", function() {
-                s = !s, s ? e.addClass("disabled") : e.removeClass("disabled"), s ? ($(".blessing-black-mask").addClass("active"), $(".blessing-wrap").addClass("active")) : ($(".blessing-black-mask").removeClass("active"), $(".blessing-wrap").removeClass("active"))
+                var url = '/pages/card/bless/index?card_id=' + C.config.card_id;
+                wx.miniProgram.navigateTo({ url: url });
+                /*s = !s, s ? e.addClass("disabled") : e.removeClass("disabled"), s ? ($(".blessing-black-mask").addClass("active"), $(".blessing-wrap").addClass("active")) : ($(".blessing-black-mask").removeClass("active"), $(".blessing-wrap").removeClass("active"))*/
             }), C.wx.onVoiceRecordEnd({
                 complete: function(e) {
                     t.showSendDia(2, e.localId)

@@ -54,7 +54,9 @@ Route::group('api/:version', [
     '/create_card'         => ['api/:version.Card/createCard',            ['method' => 'post']],                   // 创建请柬
     '/save_card'           => ['api/:version.Card/saveCard',              ['method' => 'post']],                   // 保存请柬
     '/save_bless'          => ['api/:version.Bless/saveBless',            ['method' => 'post']],                   // 发送祝福
-    '/save_voice'          => ['api/:version.Card/saveVoice',            ['method' => 'post']],                   // 保存录音
+    '/save_voice'          => ['api/:version.Card/saveVoice',             ['method' => 'post']],                   // 保存录音
+    '/join_wedding'        => ['api/:version.Bless/joinWedding',          ['method' => 'post']],                   // 请柬回执
+    '/wedding_list/:id'    => ['api/:version.Bless/getWeddingList',       ['method' => 'get'], ['id' => '\d+']],   // 获取请柬回执
 
 ]);
 

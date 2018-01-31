@@ -13,6 +13,7 @@ namespace app\api\controller\v1;
 use app\api\service\Token;
 use app\api\validate\BlessSave;
 use app\api\validate\IDMustBePostiveInt;
+use app\api\validate\JoinWeddingSave;
 use app\lib\exception\BlessMissException;
 use app\common\model\Bless as BlessModel;
 use think\Db;
@@ -63,20 +64,52 @@ class Bless
         throw new BlessMissException();
     }
 
-
+    /**
+     * 请柬回执
+     *
+     * @param Request $request
+     * @throws BlessMissException
+     */
     public function joinWedding(Request $request)
     {
+        (new JoinWeddingSave())->goCheck();
         $data = $request->post();
-        dump($data);die;
         $bless_model = BlessModel::where(['user_id'=>$data['user_id'], 'card_id'=>$data['card_id']])
             ->find()
         ;
         if ($bless_model) {
+            $bless_model->is_receipt   = 1;
             $bless_model->receipt_num  = $data['part_num'];
             $bless_model->receipt_name = $data['user_name'];
             $bless_model->isUpdate(true)->save();
+            return ['success'=>1, 'data'=>['wx_user_id'=>$data['user_id']]];
         }
+        throw new BlessMissException();
 
+    }
+
+    /**
+     * 获取Card回执信息
+     *
+     * @param $id
+     * @return array
+     * @throws BlessMissException
+     */
+    public function getWeddingList($id)
+    {
+        $bless_model = BlessModel::field('user_id,card_id,is_receipt,receipt_name,receipt_num')
+            ->with('user')
+            ->where(['is_receipt'=>1, 'card_id'=>$id])
+            ->select()
+        ;
+        $sum = 0;
+        foreach ($bless_model as $v) {
+            $sum += $v['receipt_num'];
+        }
+        if ($bless_model) {
+            return ['res'=>0, 'data'=>['wedding_list'=>$bless_model, 'sum'=>$sum]];
+        }
+        throw new BlessMissException();
     }
 
 
