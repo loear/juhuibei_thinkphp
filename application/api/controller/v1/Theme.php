@@ -150,7 +150,7 @@ class Theme
      */
     public function getThemeList()
     {
-        $theme_model = ThemeModel::field('id,name,preview,has_video,bg_color')->limit('10')->select();
+        $theme_model = ThemeModel::field('id,name,preview,has_video,bg_color')->limit('20')->select();
         if ($theme_model) {
             foreach ($theme_model as $v) {
                 $v->id;

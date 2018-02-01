@@ -50,6 +50,9 @@ class Bless
         (new BlessSave())->goCheck();
         $uid = Token::getCurrentUid();
         $data = $request->post();
+        if ($data['card_id'] < 96) {
+            return ['res'=>0];
+        }
         $count = BlessModel::where(['user_id'=>$uid, 'card_id'=>$data['card_id']])->count();
         if ($count) return ['res'=>1, 'data'=>'已经祝福过了'];
         $bless_model = new BlessModel();
@@ -74,6 +77,9 @@ class Bless
     {
         (new JoinWeddingSave())->goCheck();
         $data = $request->post();
+        if ($data['card_id'] < 96) {
+            return ['success'=>1];
+        }
         $bless_model = BlessModel::where(['user_id'=>$data['user_id'], 'card_id'=>$data['card_id']])
             ->find()
         ;

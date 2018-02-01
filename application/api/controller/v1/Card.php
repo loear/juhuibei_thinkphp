@@ -294,10 +294,24 @@ class Card
         $theme_id = $request->post('theme_id');
         $card_model = CardModel::find($card_id);
         if ($card_model) {
-            $module_model = CardModel::field('module_data')->where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
-            $card_model->theme_id    = $theme_id;
-            $card_model->module_data = $module_model->module_data;
-            $card_model->save();
+            $module_model = CardModel::where(['theme_id'=>$theme_id, 'is_theme'=>1])->find();
+            $card_model->theme_id           = $theme_id;
+            $card_model->wedding_time       = time() + 864000; // 当前时间 + 10天
+            $card_model->bride_name         = $module_model->bride_name;
+            $card_model->bride_phone        = $module_model->bride_phone;
+            $card_model->bridegroom_name    = $module_model->bridegroom_name;
+            $card_model->bridegroom_phone   = $module_model->bridegroom_phone;
+            $card_model->cover              = $module_model->cover;
+            $card_model->flip               = $module_model->flip;
+            $card_model->longitude          = $module_model->longitude;
+            $card_model->latitude           = $module_model->latitude;
+            $card_model->music_id           = $module_model->music_id;
+            $card_model->wedding_address    = $module_model->wedding_address;
+            $card_model->module_data        = $module_model->module_data;
+            $card_model->config_id          = $module_model->config_id;
+            $card_model->wedding_video      = $module_model->wedding_video;
+            $card_model->wedding_video_cover= $module_model->wedding_video_cover;
+            $card_model->isUpdate(true)->save();
             return ['res'=>0];
         }
         throw new CardMissException();
