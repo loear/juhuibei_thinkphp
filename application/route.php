@@ -72,7 +72,8 @@ Route::post('api/:version/pay/concurrency', 'api/:version.Pay/notifyConcurrency'
 Route::group('play', function() { // 后台以amos开始
     Route::get('read_heart', 'home/Games/readHeart'); 
     Route::get('dont_die', 'home/Games/dontDie');
-    git 
+
+
 },['ext'=>'html']);
 
 Route::group('amos', function(){ // 后台以amos开始
