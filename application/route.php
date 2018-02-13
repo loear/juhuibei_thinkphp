@@ -74,6 +74,8 @@ Route::group('play', function() { // 后台以amos开始
     Route::get('dont_die', 'home/Games/dontDie');
 
 
+
+
 },['ext'=>'html']);
 
 Route::group('amos', function(){ // 后台以amos开始
