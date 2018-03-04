@@ -21,4 +21,9 @@ class Games
         return view();
     }
 
+    public function crop()
+    {
+        return view();
+    }
+
 }
