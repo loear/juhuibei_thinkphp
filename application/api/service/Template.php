@@ -29,8 +29,8 @@ class Template
     public function getAccessToken()
     {
         $key = md5(config('setting.access_token_key') . config('secure.token_salt'));
-        $cacheValjue = Cache::get($key);
-        if (!$cacheValjue) {
+        $cacheValue = Cache::get($key);
+        if (!$cacheValue) {
             $result = curl_get($this->wxTemplateUrl);
             $wxResult = json_decode($result, true);
             if (empty($wxResult)) {
@@ -45,7 +45,7 @@ class Template
                 }
             }
         } else {
-            $wxResult = json_decode($cacheValjue, true);
+            $wxResult = json_decode($cacheValue, true);
             return $wxResult['access_token'];
         }
     }
