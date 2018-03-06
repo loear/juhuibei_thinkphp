@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="/static/plugins/jssdk/css/style.css">
 </head>
 <body ontouchstart="">
+<input id="config" type="hidden"
+       data-appId="{$appId}"
+       data-timestamp="{$timestamp}"
+       data-nonceStr="{$nonceStr}"
+       data-signature="{$signature}"
+>
 <div class="wxapi_container">
     <div class="wxapi_index_container">
         <ul class="label_box lbox_close wxapi_index_list">
@@ -137,10 +143,10 @@
      */
     wx.config({
         debug: false,
-        appId: 'wx3ea377e9cef7406f',
-        timestamp: 1520036086,
-        nonceStr: 'PWrW0nZJTzPSHgql',
-        signature: '5b4ad41693357582b3a4c6bcbf8103f932fb8daf',
+        appId: $('#config').data('appId'),
+        timestamp: $('#config').data('timestamp'),
+        nonceStr: $('#config').data('nonceStr'),
+        signature: $('#config').data('signature'),
         jsApiList: [
             'checkJsApi',
             'onMenuShareTimeline',
