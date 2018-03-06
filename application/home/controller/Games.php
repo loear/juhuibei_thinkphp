@@ -9,7 +9,10 @@
 namespace app\home\controller;
 
 
-class Games
+use app\home\service\Ticket;
+use think\Controller;
+
+class Games extends Controller
 {
     public function readHeart()
     {
@@ -28,16 +31,19 @@ class Games
         $timestamp = time();
         $str = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
         $nonceStr = substr(str_shuffle($str), rand(0, 35), 16); // 16位随机字符 ｜ 62 - 16 - 1 = 35
-
-        $jsapi_ticket = '';
+        $ticket_model = new Ticket();
+        $jsapi_ticket = $ticket_model->getTicket();
+        echo $jsapi_ticket;
+        echo '++', $nonceStr;
         $string1_arr = [
             'jsapi_ticket' => $jsapi_ticket,
             'noncestr'     => $nonceStr,
-            'timestamp'    => $timestamp,
-            'url'          => 'https://www.juhuibei.com/play/corp.html'
+            'timestamp'    => $timestamp
         ];
-        $signature = sha1(http_build_query($string1_arr));
+        $string1 = http_build_query($string1_arr) . '&url=https://www.juhuibei.com/play/crop.html';
+        $signature = sha1($string1);
 
+        $this->assign(compact('appId', 'timestamp', 'nonceStr', 'signature'));
         return view();
     }
 

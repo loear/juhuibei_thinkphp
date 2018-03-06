@@ -8,10 +8,10 @@
 </head>
 <body ontouchstart="">
 <input id="config" type="hidden"
-       data-appId="{$appId}"
-       data-timestamp="{$timestamp}"
-       data-nonceStr="{$nonceStr}"
-       data-signature="{$signature}"
+       data-appId="{{$appId}}"
+       data-timestamp="{{$timestamp}}"
+       data-nonceStr="{{$nonceStr}}"
+       data-signature="{{$signature}}"
 >
 <div class="wxapi_container">
     <div class="wxapi_index_container">
@@ -128,7 +128,7 @@
 </body>
 <!--<script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>-->
 <script src="/static/plugins/jssdk/js/jweixin-1.3.2.js"></script>
-
+<script src="/static/js/jquery/1.9.1/jquery.min.js"></script>
 <script>
     /*
      * 注意：
@@ -142,11 +142,11 @@
      * 邮件内容说明：用简明的语言描述问题所在，并交代清楚遇到该问题的场景，可附上截屏图片，微信团队会尽快处理你的反馈。
      */
     wx.config({
-        debug: false,
-        appId: $('#config').data('appId'),
-        timestamp: $('#config').data('timestamp'),
-        nonceStr: $('#config').data('nonceStr'),
-        signature: $('#config').data('signature'),
+        debug: true,
+        appId: '{{$appId}}',
+        timestamp: {{$timestamp}},
+        nonceStr: '{{$nonceStr}}',
+        signature: '{{$signature}}',
         jsApiList: [
             'checkJsApi',
             'onMenuShareTimeline',
