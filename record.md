@@ -19,7 +19,7 @@ FLUSH PRIVILEGES;
 | 10005  | 提交的数据不合法，或参数有误 |
 | 10006  | 无法获取上传的文件 |
 | 10007  | 该不能被修改，id错误或是不可被修改的目录 |
-| 10008  | 错误的请求方式 |  
+| 10008  | 错误的请求方式 |
 
 
 TRUNCATE ng_card;
@@ -62,7 +62,7 @@ card.js 74行
  p && (h.value = 1e3 * d), u.indexOf("lsc_time") > -1 && (h.value = this.data.wedding_time ? 1e3 * this.data.wedding_time : +new Date), u.indexOf("phone") > -1 && l.push("phone"), this.webp_usable && /jpg|png|jpeg$/.test(d) && (h.value = d + ""), n || p || (h.font_family && (this.fonts_url.push(h.font_family), this.font_family_list[o] || (this.font_family_list[o] = []), E && _.set(t.module_id + u + "_font", h.font_family), this.font_family_list[o].push({
 ```
 
-174 行 
+174 行
 
 ```angular2html
  i.config = t, $("#loading-cover").css("background-image", "url(" + t.cover + "!/sq/150)"), t.global_css && (new m(null, null, t.global_css).renderCss("global"), this.renderCustomFrames(t.global_css)), d.init(), d.start();
