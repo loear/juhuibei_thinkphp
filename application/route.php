@@ -67,6 +67,7 @@ Route::group('api/:version', [
     '/emot/admin'          => ['api/:version.Admin/home',                 ['method' => 'get']],   // 获取请柬回执
     '/emot/save_image'     => ['api/:version.Admin/saveimage',            ['method' => 'post']],   // 获取请柬回执
     '/emot/image'          => ['api/:version.Admin/image',                ['method' => 'get']],   // 获取请柬回执
+    '/emot/update_image'   => ['api/:version.Admin/saveImageData',        ['method' => 'post']],   // 获取请柬回执
 
 
 

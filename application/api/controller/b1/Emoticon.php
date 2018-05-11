@@ -58,7 +58,7 @@ class Emoticon
             return ['res'=>0, 'data'=>$image_model];
         }
     }
-git 
+
     public function getHotSearchWord()
     {
         $data = [

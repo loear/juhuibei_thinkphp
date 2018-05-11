@@ -26,10 +26,9 @@ class Admin
     public function saveImage(Request $request)
     {
         $category_id = $request->post('category', 0);
-        $name        = $request->post('name/a', []);
         $files       = $request->file('images');
 
-        if (!$category_id || !$name || !$files) throw new Exception('数据出错!');
+        if (!$category_id || !$files) throw new Exception('数据出错!');
 
         require_once '../vendor/qiniu-php-sdk/autoload.php';
         $accessKey  = config('qiniu.access_key');
@@ -49,7 +48,6 @@ class Admin
             } else {
                 $model = new ImageModel();
                 $model->category_id = $category_id;
-                $model->name        = $name[$k];
                 $model->url         = $domain .'/'. $ret['key'];
                 $model->save();
             }
@@ -60,8 +58,27 @@ class Admin
 
     public function image()
     {
-        $image_model = ImageModel::order('create_time desc')->limit('20')->select();
+        $image_model = ImageModel::order('create_time desc')->paginate(21);
         return view('image', ['list'=>$image_model]);
+    }
+
+    public function saveImageData(Request $request)
+    {
+        $id     = $request->post('id');
+        $name   = $request->post('name');
+        $tags   = $request->post('tags');
+        $is_new = $request->post('is_new');
+        $is_hot = $request->post('is_hot');
+        if (empty($id) || empty($name))  return ['res'=>1];
+        $image_model = ImageModel::find($id);
+        $image_model->name   = $name;
+        $image_model->tags   = $tags;
+        $image_model->is_new = $is_new;
+        $image_model->is_hot = $is_hot;
+        $image_model->isUpdate(true)->save();
+        if ($image_model->id) {
+            return ['res'=>0];
+        }
     }
 
 }

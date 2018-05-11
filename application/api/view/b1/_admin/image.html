@@ -8,8 +8,10 @@
     <link rel="stylesheet" type="text/css" href="/static/plugins/filer/css/bootstrap.min.css">
     <style>
         .image-box {
-            width:25%;
+            width:32.6%;
             display: inline-block;
+            text-align: center;
+            position: relative;
         }
         .image-title {
             text-align: center;
@@ -17,6 +19,31 @@
             height: 30px;
             line-height: 30px;
         }
+        .form-group {
+            width:100%;
+        }
+        .container {text-align: center;}
+        .input {
+            position: absolute;
+            top: 0;
+            left: 8px;
+            background: #F77;
+            color: #FFF;
+            padding: 0 5px;
+            border-radius: 2px;
+            height: 22px;
+            line-height: 22px;
+            opacity: .3;
+        }
+
+        .input-new {
+           top: 0;
+        }
+
+        .input-hot {
+            top: 40px;
+        }
+
     </style>
 </head>
 <body>
@@ -27,16 +54,58 @@
                 {volist name="list" id="image"}
                 <div class="image-box">
                     <image src="{$image.url}" class="img-thumbnail"></image>
-                    <div class="image-title">{$image.name}</div>
+                    <div class="checkbox input input-new">
+                        <label>
+                            <input type="checkbox" name="is_new_{$image.id}" {$image.is_new?'checked':''}>is_new
+                        </label>
+                    </div>
+                    <div class="checkbox input input-hot">
+                        <label>
+                            <input type="checkbox" name="is_hot_{$image.id}" {$image.is_hot?'checked':''}>is_hot
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-top: 5px;">
+                        <input class="form-control input-sm" type="text" placeholder="请输入标签" value="{$image.tags}" name="tags_{$image.id}">
+                        <input class="form-control input-sm" type="text" placeholder="请输入名称" value="{$image.name}" name="name" data-id="{$image.id}">
+                    </div>
                 </div>
                 {/volist}
             </div>
+            {$list->render()}
         </div>
+
     </section>
 </article>
 
 <script src="/static/plugins/filer/js/jquery-2.1.1.min.js" type="text/javascript"></script>
 <script src="/static/plugins/filer/js/bootstrap.min.js" type="text/javascript"></script>
-
+<script>
+    $("input[name='name']").blur(function() {
+        var name = $(this).val();
+        var id = $(this).data('id');
+        var tags = $("input[name='tags_" + id + "']").val();
+        var is_new = $("input[name='is_new_" + id + "']").prop("checked") ? 1 : 0;
+        var is_hot = $("input[name='is_hot_" + id + "']").prop("checked") ? 1 : 0;
+        $.ajax({
+            type: 'POST',
+            url: '/api/b1/emot/update_image',
+            data: {
+                name: name,
+                id: id,
+                tags: tags,
+                is_new: is_new,
+                is_hot: is_hot
+            },
+            success: function (res) {
+                if (res.res === 0) {
+                    alert('保存成功!');
+                } else {
+                    alert('保存失败!')
+                }
+            },
+            dataType: 'json'
+        });
+    });
+</script>
 </body>
 </html>

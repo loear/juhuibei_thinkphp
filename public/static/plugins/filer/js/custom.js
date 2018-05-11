@@ -17,10 +17,10 @@ $(document).ready(function(){
                                         {{fi-image}}\
                                     </div>\
                                     <div class="jFiler-item-assets jFiler-row">\
-                                        <div class="form-group form-group-sm" style="margin-bottom:5px;display: inline-block;width:83%;">\
-                                            <input type="text" class="form-control input-sm" name="name[]" placeholder="请输入名称">\
-                                        </div>\
-                                        <ul class="list-inline pull-right" style="padding-top:5px;">\
+                                        <ul class="list-inline pull-left">\
+                                            <li>{{fi-progressBar}}</li>\
+                                        </ul>\
+                                        <ul class="list-inline pull-right">\
                                             <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
                                         </ul>\
                                     </div>\
