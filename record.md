@@ -4,6 +4,8 @@ CREATE DATABASE `ng_intivation` charset=utf8;
 
 GRANT ALL PRIVILEGES ON `ng_intivation`.* TO 'guo'@'%' IDENTIFIED BY 'sn_123456' WITH GRANT OPTION;
 
+GRANT ALL PRIVILEGES ON `ng_emoticon`.* TO 'guo'@'%' IDENTIFIED BY 'sn_123456' WITH GRANT OPTION;
+
 FLUSH PRIVILEGES;
 
 ## 错误代码

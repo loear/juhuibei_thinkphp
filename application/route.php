@@ -58,6 +58,18 @@ Route::group('api/:version', [
     '/join_wedding'        => ['api/:version.Bless/joinWedding',          ['method' => 'post']],                   // 请柬回执
     '/wedding_list/:id'    => ['api/:version.Bless/getWeddingList',       ['method' => 'get'], ['id' => '\d+']],   // 获取请柬回执
 
+    '/emot/new'            => ['api/:version.Emoticon/getEmoticonNew',    ['method' => 'get']],   // 获取请柬回执
+    '/emot/list'           => ['api/:version.Emoticon/getCategoryList',   ['method' => 'get']],   // 获取请柬回执
+    '/emot/cat/:id'        => ['api/:version.Emoticon/getCategoryById',   ['method' => 'get'], ['id' => '\d+']],   // 获取请柬回执
+    '/emot/search/:word'   => ['api/:version.Emoticon/getSearchImage',    ['method' => 'get']],   // 获取请柬回执
+    '/emot/hot_search'     => ['api/:version.Emoticon/getHotSearchWord',  ['method' => 'get']],   // 获取请柬回执
+
+    '/emot/admin'          => ['api/:version.Admin/home',                 ['method' => 'get']],   // 获取请柬回执
+    '/emot/save_image'     => ['api/:version.Admin/saveimage',            ['method' => 'post']],   // 获取请柬回执
+    '/emot/image'          => ['api/:version.Admin/image',                ['method' => 'get']],   // 获取请柬回执
+
+
+
 ]);
 
 
