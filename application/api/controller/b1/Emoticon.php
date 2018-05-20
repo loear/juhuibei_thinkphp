@@ -13,6 +13,11 @@ use app\common\model\b1\Image as ImageModel;
 
 class Emoticon
 {
+    /**
+     * 获取表情
+     *
+     * @return array
+     */
     public function getEmoticonNew()
     {
         $count = ImageModel::where(['is_new'=>1])->count();
