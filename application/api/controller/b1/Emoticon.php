@@ -30,6 +30,11 @@ class Emoticon
         }
     }
 
+    /**
+     * 获取分类列表
+     *
+     * @return array
+     */
     public function getCategoryList()
     {
         $cat_model = CategoryModel::with([
