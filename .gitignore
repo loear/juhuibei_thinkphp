@@ -7,3 +7,4 @@ thinkphp
 runtime/
 application/extra/*
 application/database.php
+record.md
