@@ -37,7 +37,7 @@ TRUNCATE ng_theme;
 TRUNCATE ng_theme_module;
 
 37
- s223
+ s2234
 73
 
 https://www.pica.im/card/preview/26#pc_preview
